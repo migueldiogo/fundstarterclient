@@ -4,8 +4,7 @@ import java.net.*;
 import java.io.*;
 
 public class Main {
-
-    public static void main(String[] args) {
+    public static void main(String args[]) {
         // args[0] <- hostname of destination
         if (args.length == 0) {
             System.out.println("java TCPClient hostname");
@@ -18,38 +17,33 @@ public class Main {
             // 1o passo
             s = new Socket(args[0], serversocket);
 
-            System.out.println("SOCKET=" + s);
+            System.out.println("Welcome to FundStarter!");
             // 2o passo
             DataInputStream in = new DataInputStream(s.getInputStream());
             DataOutputStream out = new DataOutputStream(s.getOutputStream());
 
-            // Credenciais de autenticação
-            String nome = "";
-            String password = "";
+            // Comandos
+            String comando = "";
 
             InputStreamReader input = new InputStreamReader(System.in);
             BufferedReader reader = new BufferedReader(input);
-            System.out.println("Nome: ");
-            System.out.println("Password: ");
 
             // 3o passo
             while (true) {
-                // READ STRING FROM KEYBOARD
+                // Ler comandos do teclado
                 try {
-                    nome = reader.readLine();
-                    password = reader.readLine();
-                } catch (Exception e) {
-                }
+                    // ... Lista de comandos a adiconar ... //
+                    System.out.print(">>> ");
+                    comando = reader.readLine();
+                } catch (Exception e) {}
 
-                // WRITE INTO THE SOCKET
-                out.writeUTF(nome);
-                out.writeUTF(password);
 
-                // READ FROM SOCKET
+                // Enviar comando atravès do Socket
+                out.writeUTF(comando);
+
+                // Ler a partir do Socket
                 String data = in.readUTF();
-
-                // DISPLAY WHAT WAS READ
-                System.out.println("Received: " + data);
+                System.out.println("Recebeu: " + data);
             }
 
         } catch (UnknownHostException e) {
@@ -66,6 +60,5 @@ public class Main {
                     System.out.println("close:" + e.getMessage());
                 }
         }
-
     }
 }
