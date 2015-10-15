@@ -1,49 +1,37 @@
 package fundstarterclient;
 
+
+import fundstarter.ServerMessage;
+
 import java.net.*;
 import java.io.*;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String args[]) {
         // args[0] <- hostname of destination
-        if (args.length == 0) {
-            System.out.println("java TCPClient hostname");
-            System.exit(0);
-        }
+
 
         Socket s = null;
-        int serversocket = 7000;
+        int serversocket = 8100;
         try {
-            // 1o passo
-            s = new Socket(args[0], serversocket);
+            s = new Socket("localhost", serversocket);
 
             System.out.println("Welcome to FundStarter!");
-            // 2o passo
-            DataInputStream in = new DataInputStream(s.getInputStream());
+
+            ObjectInputStream in = new ObjectInputStream(s.getInputStream());
+
             DataOutputStream out = new DataOutputStream(s.getOutputStream());
 
-            // Comandos
-            String comando = "";
 
-            InputStreamReader input = new InputStreamReader(System.in);
-            BufferedReader reader = new BufferedReader(input);
 
             // 3o passo
             while (true) {
-                // Ler comandos do teclado
-                try {
-                    // ... Lista de comandos a adiconar ... //
-                    System.out.print(">>> ");
-                    comando = reader.readLine();
-                } catch (Exception e) {}
+                ServerMessage message = (ServerMessage) in.readObject();
+                System.out.println(message.toString());
+                Scanner scan = new Scanner(System.in);
+                out.writeUTF(scan.nextLine());
 
-
-                // Enviar comando atravès do Socket
-                out.writeUTF(comando);
-
-                // Ler a partir do Socket
-                String data = in.readUTF();
-                System.out.println("Recebeu: " + data);
             }
 
         } catch (UnknownHostException e) {
@@ -52,6 +40,8 @@ public class Main {
             System.out.println("EOF:" + e.getMessage());
         } catch (IOException e) {
             System.out.println("IO:" + e.getMessage());
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         } finally {
             if (s != null)
                 try {
