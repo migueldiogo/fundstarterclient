@@ -11,9 +11,12 @@ public class Main {
     public static void main(String args[]) {
         // args[0] <- hostname of destination
 
-
         Socket s = null;
-        int serversocket = 8100;
+        int serversocket = 8200;
+        ShowMenus menu = new ShowMenus();
+        String command = "";
+        ServerMessage message = new ServerMessage();
+
         try {
             s = new Socket("localhost", serversocket);
 
@@ -25,12 +28,18 @@ public class Main {
 
 
 
+            menu.initiateMenuDrivenWithClient(in, out);
+
+            System.out.println(command);
+
+
             // 3o passo
             while (true) {
-                ServerMessage message = (ServerMessage) in.readObject();
+                //ServerMessage message = (ServerMessage) in.readObject();
                 System.out.println(message.toString());
-                Scanner scan = new Scanner(System.in);
-                out.writeUTF(scan.nextLine());
+
+
+                out.writeUTF(command);
 
             }
 
@@ -51,4 +60,5 @@ public class Main {
                 }
         }
     }
+
 }

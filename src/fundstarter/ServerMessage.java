@@ -51,4 +51,16 @@ public class ServerMessage implements Serializable{
     public String toString() {
         return errorMessageBefore + "\n" + content;
     }
+
+    // Return 1 in error
+    public int verifyAnswer(ServerMessage message){
+        if(!repeatAnswerToPrevious){
+            System.out.println("Content: " + this.content);
+            return 0;
+        }
+        else{
+            System.out.println("Error: " + this.errorMessageBefore);
+            return 1;
+        }
+    }
 }
