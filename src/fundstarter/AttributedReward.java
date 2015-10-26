@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by sergiopires on 26/10/15.
  */
-public class AttributedGifts implements Serializable{
+public class AttributedReward implements Serializable{
     private String sendFrom;
     private String projectName;
     private String giftName;
@@ -14,13 +14,13 @@ public class AttributedGifts implements Serializable{
     private static final long serialVersionUID = 1L;
 
 
-    public AttributedGifts(String username, String projectName, String giftName, String sender) {
+    public AttributedReward(String username, String projectName, String giftName, String sender) {
         this.sendFrom = username;
         this.projectName = projectName;
         this.giftName = giftName;
         this.sendTo = sender;
     }
-    public AttributedGifts(){}
+    public AttributedReward(){}
 
 
     public String getSendFrom() {
@@ -53,5 +53,15 @@ public class AttributedGifts implements Serializable{
 
     public void setSendTo(String sendTo) {
         this.sendTo = sendTo;
+    }
+
+    @Override
+    public String toString() {
+        return "AttributedReward{" +
+                "sendFrom='" + sendFrom + '\'' +
+                ", projectName='" + projectName + '\'' +
+                ", giftName='" + giftName + '\'' +
+                ", sendTo='" + sendTo + '\'' +
+                '}';
     }
 }

@@ -4,9 +4,7 @@ import fundstarter.*;
 
 import java.io.*;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -97,7 +95,7 @@ public class ShowMenus {
                     voltar = !projectMenuLoggedIn();
                     break;
                 case 2:
-                    personalAreaSubMenu();
+                    voltar = !personalAreaSubMenu();
                     break;
                 case 3:
                     this.mainMenu();
@@ -110,6 +108,7 @@ public class ShowMenus {
     }
 
     public boolean personalAreaSubMenu() throws IOException, ParseException {
+        boolean voltar = true;
         ServerMessage message;
         Menu subMenu = new Menu();
 
@@ -123,37 +122,39 @@ public class ShowMenus {
         subMenu.addOption("Back");
         subMenu.setAnswerPrompt("Please enter your choice: ");
 
-        System.out.printf(subMenu.toString());
+        do{
+            System.out.printf(subMenu.toString());
 
-        int optionChosen = readOptionChosenByUser(subMenu);
+            int optionChosen = readOptionChosenByUser(subMenu);
 
-        switch (optionChosen) {
-            case 1:
-                viewMessages();
-                break;
-            case 2:
-                offerGiftToOtherPerson();
-                break;
-            case 3:
-                viewBalance();
-                break;
-            case 4:
-                viewRewards();
-                break;
-            case 5:
-                offerRewardToPerson();
-                break;
-            case 6:
-                sendMessageToOtherUser();
-                break;
-            case 7:
-                cancelProject();
-            case 8:
-                return false;
-            default:
-                System.out.println("Choose an option between 1 and 6");
-                break;
-        }
+            switch (optionChosen) {
+                case 1:
+                    viewMessages();
+                    break;
+                case 2:
+                    offerGiftToOtherPerson();
+                    break;
+                case 3:
+                    viewBalance();
+                    break;
+                case 4:
+                    viewRewards();
+                    break;
+                case 5:
+                    offerRewardToPerson();
+                    break;
+                case 6:
+                    sendMessageToOtherUser();
+                    break;
+                case 7:
+                    cancelProject();
+                case 8:
+                    return false;
+                default:
+                    System.out.println("Choose an option between 1 and 6");
+                    break;
+            }
+        }while(voltar);
 
         return true;
     }
@@ -271,7 +272,7 @@ public class ShowMenus {
 
     public void offerGiftToOtherPerson() throws IOException {
         Scanner scan = new Scanner(System.in);
-        AttributedGifts gift = new AttributedGifts();
+        AttributedReward gift = new AttributedReward();
 
         System.out.print("To: ");           gift.setSendTo(scan.nextLine());
         System.out.print("Project Name: "); gift.setProjectName(scan.nextLine());
@@ -317,7 +318,7 @@ public class ShowMenus {
         Scanner scan = new Scanner(System.in);
         Command command = new Command();
 
-        command.setCommand("sendreward");
+        command.setCommand("sendReward");
         System.out.print("Person name: ");  command.addArgument(scan.nextLine());
         System.out.print("Reward: ");       command.addArgument(scan.nextLine());
         command.addArgument(loggedPerson);
@@ -329,29 +330,34 @@ public class ShowMenus {
     // View
     public void viewMessages() throws  IOException{
         Command command = new Command();
+        ArrayList<Message> messages;
 
-        command.setCommand("view");
-        command.addArgument("messages");
+        command.setCommand("viewMessages");
         this.sendCommandToServer(command);
-        this.receiveResponseFromServer();
+        messages = (ArrayList<Message>)receiveResponseFromServer().getContent();
+        for(Message mess : messages){
+            System.out.println(mess.toString());
+        }
     }
 
     public void viewBalance() throws IOException {
         Command command = new Command();
 
-        command.setCommand("view");
-        command.addArgument("balance");
+        command.setCommand("viewBalance");
         this.sendCommandToServer(command);
         this.receiveResponseFromServer();
     }
 
     public void viewRewards() throws IOException {
         Command command = new Command();
+        ArrayList<AttributedReward> rewards;
 
-        command.setCommand("view");
-        command.addArgument("rewards");
-        this.sendCommandToServer(command);
-        this.receiveResponseFromServer();
+        command.setCommand("viewRewards");
+        sendCommandToServer(command);
+        rewards = (ArrayList<AttributedReward>)receiveResponseFromServer().getContent();
+        for(AttributedReward reward : rewards){
+            System.out.println(reward.toString());
+        }
     }
 
     public void sendCommandToServer(Command command) throws IOException{
@@ -375,23 +381,22 @@ public class ShowMenus {
 
     public void projectsInProgress() throws IOException{
         Command command = new Command();
+        ArrayList<Project> projectsInProgress;
 
         command.setCommand("listInProgress");
         this.sendCommandToServer(command);
-        ArrayList<Project> projectsInProgress = new ArrayList<Project>();
         projectsInProgress = (ArrayList<Project>)receiveResponseFromServer().getContent();
         for(Project proj : projectsInProgress){
             System.out.println(proj.toString());
         }
-        //System.out.println(projectsInProgress.toString());
     }
 
     public void projectsExpired() throws IOException{
         Command command = new Command();
+        ArrayList<Project> projectsInProgress;
 
         command.setCommand("listExpired");
         this.sendCommandToServer(command);
-        ArrayList<Project> projectsInProgress = new ArrayList<Project>();
         projectsInProgress = (ArrayList<Project>)receiveResponseFromServer().getContent();
         for(Project proj : projectsInProgress){
             System.out.println(proj.toString());
@@ -410,16 +415,13 @@ public class ShowMenus {
 
     public void sendMessageToOtherUser() throws IOException, ParseException {
         Scanner scan = new Scanner(System.in);
-        Message newMessage = new Message();
-        String date = new Date().toString();
-        Date dateFormat = new SimpleDateFormat("yyyy/MM/dd").parse(date);
+        Command command = new Command();
 
-        newMessage.setSendFrom(loggedPerson);
-        System.out.print("To: ");   newMessage.setSendTo(scan.nextLine());
-        System.out.print("Text: "); newMessage.setText(scan.nextLine());
-        newMessage.setData(dateFormat.toString());
+        command.setCommand("sendMessage");
+        System.out.print("To: ");   command.addArgument(scan.nextLine());
+        System.out.print("Text: "); command.addArgument(scan.nextLine());
 
-        this.sendObjectToServer(newMessage);
+        this.sendObjectToServer(command);
         this.receiveResponseFromServer();
     }
 
