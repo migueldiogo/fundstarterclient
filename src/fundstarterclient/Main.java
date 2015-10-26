@@ -9,7 +9,8 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String args[]) {
-        // args[0] <- hostname of destination
+        //args[0] <- hostname of destination
+
 
         Socket s = null;
         int serversocket = 8200;
@@ -18,13 +19,13 @@ public class Main {
         ServerMessage message = new ServerMessage();
 
         try {
-            s = new Socket("localhost", serversocket);
+            s = new Socket(args[0], serversocket);
 
             System.out.println("Welcome to FundStarter!");
 
             ObjectInputStream in = new ObjectInputStream(s.getInputStream());
 
-            DataOutputStream out = new DataOutputStream(s.getOutputStream());
+            ObjectOutputStream out = new ObjectOutputStream(s.getOutputStream());
 
 
 
