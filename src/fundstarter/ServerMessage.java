@@ -8,20 +8,20 @@ import java.io.Serializable;
 public class ServerMessage implements Serializable{
     private static final long serialVersionUID = 1L;
     private String errorMessageBefore;
-    private String content;
+    private Object content;
     private boolean repeatAnswerToPrevious;
 
     public ServerMessage() {
         this.errorMessageBefore = "";
-        this.content = "";
         this.repeatAnswerToPrevious = false;
     }
 
-    public ServerMessage(String errorMessageBefore, String content, boolean repeatAnswerToPrevious) {
-        this.errorMessageBefore = errorMessageBefore;
-        this.content = content;
-        this.repeatAnswerToPrevious = repeatAnswerToPrevious;
+    public ServerMessage(ServerMessage serverMessageToCopy) {
+        this.errorMessageBefore = serverMessageToCopy.getErrorMessageBefore();
+        this.content = serverMessageToCopy.getContent();
+        this.repeatAnswerToPrevious = serverMessageToCopy.isRepeatAnswerToPrevious();
     }
+
 
     public String getErrorMessageBefore() {
         return errorMessageBefore;
@@ -31,11 +31,11 @@ public class ServerMessage implements Serializable{
         this.errorMessageBefore = errorMessageBefore;
     }
 
-    public String getContent() {
+    public Object getContent() {
         return content;
     }
 
-    public void setContent(String content) {
+    public void setContent(Object content) {
         this.content = content;
     }
 
@@ -63,4 +63,18 @@ public class ServerMessage implements Serializable{
             return 1;
         }
     }
+
+    public int decodeLogin(){
+        if(this.repeatAnswerToPrevious == false){
+            return 0;
+        }
+        else{
+            return 1;
+        }
+    }
+
+
 }
+
+
+

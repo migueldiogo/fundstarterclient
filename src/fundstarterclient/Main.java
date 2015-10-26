@@ -23,11 +23,7 @@ public class Main {
 
             System.out.println("Welcome to FundStarter!");
 
-            ObjectInputStream in = new ObjectInputStream(s.getInputStream());
-
-            ObjectOutputStream out = new ObjectOutputStream(s.getOutputStream());
-
-
+            Connection c = new Connection(s);
 
             menu.initiateMenuDrivenWithClient(in, out);
 
