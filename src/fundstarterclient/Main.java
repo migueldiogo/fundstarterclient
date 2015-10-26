@@ -5,6 +5,7 @@ import fundstarter.ServerMessage;
 
 import java.net.*;
 import java.io.*;
+import java.text.ParseException;
 import java.util.Scanner;
 
 public class Main {
@@ -32,6 +33,8 @@ public class Main {
             System.out.println("EOF:" + e.getMessage());
         } catch (IOException e) {
             System.out.println("IO:" + e.getMessage());
+        } catch (ParseException e) {
+            e.printStackTrace();
         } finally {
             if (s != null)
                 try {

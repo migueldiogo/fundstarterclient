@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.text.ParseException;
 
 /**
  * Created by xavier on 26-10-2015.
@@ -13,7 +14,7 @@ public class Connection {
     private ObjectInputStream inputStream;
     private ObjectOutputStream outputStream;
 
-    public Connection(Socket socket) {
+    public Connection(Socket socket) throws IOException, ParseException {
         try{
             this.socket = socket;
             this.outputStream = new ObjectOutputStream(socket.getOutputStream());
