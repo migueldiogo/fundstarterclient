@@ -14,7 +14,6 @@ public class Main {
 
         Socket s = null;
         int serversocket = 8200;
-        ShowMenus menu = new ShowMenus();
         String command = "";
         ServerMessage message = new ServerMessage();
 
@@ -23,22 +22,9 @@ public class Main {
 
             System.out.println("Welcome to FundStarter!");
 
-            Connection c = new Connection(s);
-
-            menu.initiateMenuDrivenWithClient(in, out);
-
-            System.out.println(command);
+            Connection connection = new Connection(s);
 
 
-            // 3o passo
-            while (true) {
-                //ServerMessage message = (ServerMessage) in.readObject();
-                System.out.println(message.toString());
-
-
-                out.writeUTF(command);
-
-            }
 
         } catch (UnknownHostException e) {
             System.out.println("Sock:" + e.getMessage());
@@ -46,8 +32,6 @@ public class Main {
             System.out.println("EOF:" + e.getMessage());
         } catch (IOException e) {
             System.out.println("IO:" + e.getMessage());
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         } finally {
             if (s != null)
                 try {

@@ -9,17 +9,17 @@ public class ServerMessage implements Serializable{
     private static final long serialVersionUID = 1L;
     private String errorMessageBefore;
     private Object content;
-    private boolean repeatAnswerToPrevious;
+    private boolean errorHappened;
 
     public ServerMessage() {
         this.errorMessageBefore = "";
-        this.repeatAnswerToPrevious = false;
+        this.errorHappened = false;
     }
 
     public ServerMessage(ServerMessage serverMessageToCopy) {
         this.errorMessageBefore = serverMessageToCopy.getErrorMessageBefore();
         this.content = serverMessageToCopy.getContent();
-        this.repeatAnswerToPrevious = serverMessageToCopy.isRepeatAnswerToPrevious();
+        this.errorHappened = serverMessageToCopy.isErrorHappened();
     }
 
 
@@ -39,12 +39,12 @@ public class ServerMessage implements Serializable{
         this.content = content;
     }
 
-    public boolean isRepeatAnswerToPrevious() {
-        return repeatAnswerToPrevious;
+    public boolean isErrorHappened() {
+        return errorHappened;
     }
 
-    public void setRepeatAnswerToPrevious(boolean repeatAnswerToPrevious) {
-        this.repeatAnswerToPrevious = repeatAnswerToPrevious;
+    public void setErrorHappened(boolean errorHappened) {
+        this.errorHappened = errorHappened;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class ServerMessage implements Serializable{
 
     // Return 1 in error
     public int verifyAnswer(ServerMessage message){
-        if(!repeatAnswerToPrevious){
+        if(!errorHappened){
             System.out.println("Content: " + this.content);
             return 0;
         }
@@ -64,15 +64,16 @@ public class ServerMessage implements Serializable{
         }
     }
 
+/*
     public int decodeLogin(){
-        if(this.repeatAnswerToPrevious == false){
+        if(this.errorHappened == false){
             return 0;
         }
         else{
             return 1;
         }
     }
-
+*/
 
 }
 

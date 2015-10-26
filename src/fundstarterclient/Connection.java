@@ -22,6 +22,11 @@ public class Connection {
             System.out.println("Connection: " + e.getMessage());
         }
 
+        ShowMenus menus = new ShowMenus(inputStream, outputStream);
+        menus.start();
+
+        //System.out.println(command);
+
     }
 
 }

@@ -3,9 +3,7 @@ package fundstarterclient;
 import fundstarter.Command;
 import fundstarter.ServerMessage;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -16,19 +14,29 @@ import java.util.Scanner;
 public class ShowMenus {
     private Command command2;
     private String loggedPerson;
+    private ObjectInputStream inputStream;
+    private ObjectOutputStream outputStream;
 
     public ShowMenus(Menu menu, Command command, String loggedPerson) {
         this.command2 = command;
         this.loggedPerson = loggedPerson;
     }
-    public ShowMenus(){
-        this.command2 = new Command();
+    public ShowMenus(ObjectInputStream inputStream, ObjectOutputStream outputStream){
+        this.inputStream = inputStream;
+        this.outputStream = outputStream;
         this.loggedPerson = "";
     }
 
+    public void start() {
+        mainMenu();
+    }
 
-    public void initiateMenuDrivenWithClient(ObjectInputStream in, ObjectOutputStream out) throws IOException, ClassNotFoundException {
-        ServerMessage message;
+
+    public void mainMenu() {
+
+
+        ServerMessage message = null;
+
         Menu menu1 = new Menu();
         Command testCommand = null;
         menu1.addOption("Login");
@@ -39,58 +47,70 @@ public class ShowMenus {
 
         System.out.println(menu1.toString());
 
-        int optionChosen = messageInteractionWithClient(menu1);
+        int optionChosen = readOptionChosenByUser(menu1);
 
         switch(optionChosen){
             case 1:
-                testCommand = this.login();
-                out.writeObject(testCommand);
-                message = (ServerMessage) in.readObject();
-                System.out.println((String)message.getContent());
-                if(message.decodeLogin() == 0)
-                    this.secondMenuDrivenWithClient(in, out);
-                else
-                    this.initiateMenuDrivenWithClient(in, out);     break;
+                do {
+                    try {
+                        sendCommandToServer(login());
+                        message = receiveResponseFromServer();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                while (message.isErrorHappened());
+
+                mainMenuWithUserLoggedIn();
+            break;
             case 2:
                 testCommand = this.signUp();
-                out.writeObject(testCommand);
-                message = (ServerMessage) in.readObject();
+                outputStream.writeObject(testCommand);
+                message = (ServerMessage) inputStream.readObject();
                 System.out.println((String) message.getContent());
-                this.initiateMenuDrivenWithClient(in, out);        break;
+                this.mainMenu(inputStream, outputStream);        break;
             case 3:
                 System.exit(0);
             default:
                 System.out.println("Please choose an option between 1 and 3"); break;
         }
 
-        //this.secondMenuDrivenWithClient(in, out);
+        //this.mainMenuWithUserLoggedIn(in, out);
     }
 
-    public void secondMenuDrivenWithClient(ObjectInputStream in, ObjectOutputStream out) throws IOException, ClassNotFoundException {
+    public void mainMenuWithUserLoggedIn() {
+        boolean voltar = false;
+
         Menu menu2 = new Menu();
         menu2.addOption("Projects");
         menu2.addOption("Personal Area");
         menu2.addOption("Logout");
         menu2.setAnswerPrompt("Please enter your choice: ");
 
-        System.out.printf(menu2.toString());
 
-        int optionChosen = messageInteractionWithClient(menu2);
+        do {
+            System.out.println(menu2.toString());
 
-        switch(optionChosen){
-            case 1:
-                thirdMenuDrivenWithClient(in, out);         break;
-            case 2:
-                personalAreaSubMenu(in, out);               break;
-            case 3:
-                this.initiateMenuDrivenWithClient(in, out); break;
-            default:
-                System.out.println("Choose an option between 1 and 3");
-        }
+            int optionChosen = readOptionChosenByUser(menu2);
+
+            switch (optionChosen) {
+                case 1:
+                    voltar = !thirdMenuDrivenWithClient();
+                    break;
+                case 2:
+                    personalAreaSubMenu();
+                    break;
+                case 3:
+                    this.mainMenu();
+                    break;
+                default:
+                    System.out.println("Choose an option between 1 and 3");
+            }
+        } while (voltar);
 
     }
 
-    public void personalAreaSubMenu(ObjectInputStream in, ObjectOutputStream out) throws IOException, ClassNotFoundException {
+    public void personalAreaSubMenu() {
         ServerMessage message;
         Menu subMenu = new Menu();
         subMenu.addOption("View messages");
@@ -103,7 +123,7 @@ public class ShowMenus {
 
         System.out.printf(subMenu.toString());
 
-        int optionChosen = messageInteractionWithClient(subMenu);
+        int optionChosen = readOptionChosenByUser(subMenu);
 
         //do{
             switch(optionChosen){
@@ -120,7 +140,7 @@ public class ShowMenus {
                 case 5:
                     offerRewardToPerson();                      break;
                 case 6:
-                    secondMenuDrivenWithClient(in, out);        break;
+                    mainMenuWithUserLoggedIn(in, out);        break;
                 default:
                     System.out.println("Choose an option between 1 and 6"); break;
             }
@@ -134,7 +154,7 @@ public class ShowMenus {
 
     }
 
-    public void thirdMenuDrivenWithClient(ObjectInputStream in, ObjectOutputStream out) throws IOException, ClassNotFoundException {
+    public boolean thirdMenuDrivenWithClient() {
         ServerMessage message;
         Menu menu3 = new Menu();
         command2.setCommand("");
@@ -147,7 +167,7 @@ public class ShowMenus {
 
         System.out.print(menu3.toString());
 
-        int optionChosen = messageInteractionWithClient(menu3);
+        int optionChosen = readOptionChosenByUser(menu3);
 
 
         switch(optionChosen){
@@ -164,7 +184,7 @@ public class ShowMenus {
                 command2.addArgument("myprojects");
                 command2.addArgument(loggedPerson);          break;
             case 5:
-                secondMenuDrivenWithClient(in, out);        break;
+                return false;
             default:
                 System.out.println("Choose an option between 1 and 5");     break;
         }
@@ -191,7 +211,7 @@ public class ShowMenus {
         subMenu.addOption("Back");
         System.out.println(subMenu.toString());
 
-        int optionChosen = messageInteractionWithClient(subMenu);
+        int optionChosen = readOptionChosenByUser(subMenu);
 
         switch(optionChosen){
             case 1:
@@ -212,7 +232,7 @@ public class ShowMenus {
     }
 
 
-    public int messageInteractionWithClient(Menu menu){
+    public int readOptionChosenByUser(Menu menu){
         String rawOptionInput = "";
         int optionInput = 0;
         Boolean inputValidation;
@@ -331,6 +351,20 @@ public class ShowMenus {
     public void viewBalance(ObjectInputStream in, ObjectOutputStream out) throws IOException, ClassNotFoundException
         command2.setCommand("view");
         command2.addArgument("messages");
+    }
+
+    public void sendCommandToServer(Command command) throws IOException{
+        outputStream.writeObject(command);
+    }
+
+    public ServerMessage receiveResponseFromServer() throws IOException{
+        ServerMessage message = null;
+        try {
+            message = (ServerMessage) inputStream.readObject();
+        } catch (ClassNotFoundException e) {
+            System.out.println("Class not Found: " + e.getMessage());
+        }
+        return message;
     }
 
 
