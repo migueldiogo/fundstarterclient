@@ -16,6 +16,7 @@ public class ShowMenus {
     private String loggedPerson;
     private ObjectInputStream inputStream;
     private ObjectOutputStream outputStream;
+    private Actions action;
 
     public ShowMenus(Menu menu, String loggedPerson) {
         this.loggedPerson = loggedPerson;
@@ -24,6 +25,7 @@ public class ShowMenus {
         this.inputStream = inputStream;
         this.outputStream = outputStream;
         this.loggedPerson = "";
+        this.action = new Actions(inputStream, outputStream);
     }
 
     public void start() throws IOException, ParseException {
@@ -35,7 +37,6 @@ public class ShowMenus {
         ServerMessage message = null;
 
         Menu menu1 = new Menu();
-        Command testCommand = null;
         menu1.addOption("Login");
         menu1.addOption("Sign Up");
         menu1.addOption("Quit");
@@ -49,8 +50,8 @@ public class ShowMenus {
             case 1:
                 do {
                     try {
-                        sendCommandToServer(login());
-                        message = receiveResponseFromServer();
+                        action.sendCommandToServer(action.login());
+                        message = action.receiveResponseFromServer();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -61,8 +62,8 @@ public class ShowMenus {
                 break;
             case 2:
                 try{
-                    sendCommandToServer(signUp());
-                    message = receiveResponseFromServer();
+                    action.sendCommandToServer(action.signUp());
+                    message = action.receiveResponseFromServer();
                 } catch(IOException e){
                     e.printStackTrace();
                 }
@@ -109,7 +110,6 @@ public class ShowMenus {
 
     public boolean personalAreaSubMenu() throws IOException, ParseException {
         boolean voltar = true;
-        ServerMessage message;
         Menu subMenu = new Menu();
 
         subMenu.addOption("View messages");
@@ -129,29 +129,29 @@ public class ShowMenus {
 
             switch (optionChosen) {
                 case 1:
-                    viewMessages();
+                    action.viewMessages();
                     break;
                 case 2:
-                    offerGiftToOtherPerson();
+                    action.offerGiftToOtherPerson();
                     break;
                 case 3:
-                    viewBalance();
+                    action.viewBalance();
                     break;
                 case 4:
-                    viewRewards();
+                    action.viewRewards();
                     break;
                 case 5:
-                    offerRewardToPerson();
+                    action.offerRewardToPerson();
                     break;
                 case 6:
-                    sendMessageToOtherUser();
+                    action.sendMessageToOtherUser();
                     break;
                 case 7:
-                    cancelProject();
+                    action.cancelProject();
                 case 8:
                     return false;
                 default:
-                    System.out.println("Choose an option between 1 and 6");
+                    System.out.println("Choose an option between 1 and 8");
                     break;
             }
         }while(voltar);
@@ -161,7 +161,6 @@ public class ShowMenus {
 
     public boolean projectMenuLoggedIn() throws IOException {
         boolean voltar = true;
-        ServerMessage message;
         Menu menu3 = new Menu();
 
         menu3.addOption("Projects in Progress");
@@ -179,17 +178,17 @@ public class ShowMenus {
 
             switch(optionChosen){
                 case 1:
-                    projectsInProgress();           break;
+                    action.projectsInProgress();           break;
                 case 2:
-                    projectsExpired();              break;
+                    action.projectsExpired();              break;
                 case 3:
-                    newProject();                   break;
+                    action.newProject();                   break;
                 case 4:
-                    pledge();                       break;
+                    action.pledge();                       break;
                 case 5:
-                    sendMessage();                  break;
+                    action.sendMessage();                  break;
                 case 6:
-                    projectDetails();               break;
+                    action.projectDetails();               break;
                 case 7:
                     return false;
                 default:
@@ -223,215 +222,5 @@ public class ShowMenus {
         return optionInput;
     }
 
-    // Login method
-    public Command login(){
-        Scanner scan = new Scanner(System.in);
-        Command command = new Command();
 
-        command.setCommand("login");
-        System.out.print("Username: "); command.addArgument(loggedPerson = scan.nextLine());
-        System.out.print("Password: "); command.addArgument(scan.nextLine());
-
-        return command;
-    }
-
-    public Command signUp(){
-        Scanner scan = new Scanner(System.in);
-        Command command = new Command();
-
-        command.setCommand("signup");
-        System.out.print("Username: ");
-        command.addArgument(scan.nextLine());
-        System.out.print("Password: ");
-        command.addArgument(scan.nextLine());
-        System.out.print("Repeat Password: ");  command.addArgument(scan.nextLine());
-
-        return command;
-    }
-
-    public void newProject() throws IOException {
-        Scanner scan = new Scanner(System.in);
-        Project newProject = new Project();
-        ArrayList<Reward> rewards = new ArrayList<>();
-        Reward reward = new Reward();
-        String projectName = "";
-
-        System.out.print("Project Name: "); newProject.setName(projectName = scan.nextLine());
-        System.out.print("Description: ");  newProject.setDescription(scan.nextLine());
-        System.out.print("Limit date (DD/MM/YYYY): "); newProject.setDate(scan.nextLine());
-        System.out.print("Goal: "); newProject.setGoal(scan.nextDouble());
-        System.out.print("Rewards: ");  reward.setProjectName(projectName);
-        System.out.print("Min pledge: "); reward.setPledgeMin(scan.nextDouble());
-        System.out.print("Gift: "); reward.setGiftName(scan.nextLine());
-        newProject.setRewards(rewards);
-
-        this.sendObjectToServer(newProject);
-        this.receiveResponseFromServer();
-
-    }
-
-    public void offerGiftToOtherPerson() throws IOException {
-        Scanner scan = new Scanner(System.in);
-        AttributedReward gift = new AttributedReward();
-
-        System.out.print("To: ");           gift.setSendTo(scan.nextLine());
-        System.out.print("Project Name: "); gift.setProjectName(scan.nextLine());
-        System.out.print("Gift: ");         gift.setGiftName(scan.nextLine());
-        gift.setSendFrom(loggedPerson);
-
-        this.sendObjectToServer(gift);
-        this.receiveResponseFromServer();
-    }
-
-    public void pledge() throws IOException {
-        Scanner scan = new Scanner(System.in);
-        Command command = new Command();
-
-        command.setCommand("pledge");
-        System.out.print("Project Name: "); command.addArgument(scan.nextLine());
-        System.out.print("Amount: ");       command.addArgument(scan.nextLine());
-        System.out.print("Decision: ");     command.addArgument(scan.nextLine());
-
-        this.sendObjectToServer(command);
-        this.receiveResponseFromServer();
-    }
-
-    public void projectDetails(){
-        Scanner scan = new Scanner(System.in);
-        Command command = new Command();
-
-        System.out.print("Choose project: ");
-        command.setCommand("details");  command.addArgument(scan.nextLine());
-    }
-
-    public void sendMessage(){
-        Scanner scan = new Scanner(System.in);
-        Command command = new Command();
-
-        command.setCommand("sendtext");
-        System.out.print("Project Name: "); command.addArgument(scan.nextLine());
-        System.out.println("Message: ");    command.addArgument(scan.nextLine());
-        command.addArgument(loggedPerson);
-    }
-
-    public void offerRewardToPerson() throws IOException {
-        Scanner scan = new Scanner(System.in);
-        Command command = new Command();
-
-        command.setCommand("sendReward");
-        System.out.print("Person name: ");  command.addArgument(scan.nextLine());
-        System.out.print("Reward: ");       command.addArgument(scan.nextLine());
-        command.addArgument(loggedPerson);
-
-        this.sendCommandToServer(command);
-        this.receiveResponseFromServer();
-    }
-
-    // View
-    public void viewMessages() throws  IOException{
-        Command command = new Command();
-        ArrayList<Message> messages;
-
-        command.setCommand("viewMessages");
-        this.sendCommandToServer(command);
-        messages = (ArrayList<Message>)receiveResponseFromServer().getContent();
-        for(Message mess : messages){
-            System.out.println(mess.toString());
-        }
-    }
-
-    public void viewBalance() throws IOException {
-        Command command = new Command();
-
-        command.setCommand("viewBalance");
-        this.sendCommandToServer(command);
-        this.receiveResponseFromServer();
-    }
-
-    public void viewRewards() throws IOException {
-        Command command = new Command();
-        ArrayList<AttributedReward> rewards;
-
-        command.setCommand("viewRewards");
-        sendCommandToServer(command);
-        rewards = (ArrayList<AttributedReward>)receiveResponseFromServer().getContent();
-        for(AttributedReward reward : rewards){
-            System.out.println(reward.toString());
-        }
-    }
-
-    public void sendCommandToServer(Command command) throws IOException{
-        outputStream.writeObject(command);
-    }
-
-    public void sendObjectToServer(Object object) throws IOException {
-        outputStream.writeObject(object);
-    }
-
-    public ServerMessage receiveResponseFromServer() throws IOException{
-        ServerMessage message = null;
-        try {
-            message = (ServerMessage) inputStream.readObject();
-            System.out.println(message.getContent());
-        } catch (ClassNotFoundException e) {
-            System.out.println("Class not Found: " + e.getMessage());
-        }
-        return message;
-    }
-
-    public void projectsInProgress() throws IOException{
-        Command command = new Command();
-        ArrayList<Project> projectsInProgress;
-
-        command.setCommand("listInProgress");
-        this.sendCommandToServer(command);
-        projectsInProgress = (ArrayList<Project>)receiveResponseFromServer().getContent();
-        for(Project proj : projectsInProgress){
-            System.out.println(proj.toString());
-        }
-    }
-
-    public void projectsExpired() throws IOException{
-        Command command = new Command();
-        ArrayList<Project> projectsInProgress;
-
-        command.setCommand("listExpired");
-        this.sendCommandToServer(command);
-        projectsInProgress = (ArrayList<Project>)receiveResponseFromServer().getContent();
-        for(Project proj : projectsInProgress){
-            System.out.println(proj.toString());
-        }
-    }
-
-    public void listMessages(String projectName) throws IOException{
-        Scanner scan = new Scanner(System.in);
-        Command command = new Command();
-
-        command.setCommand("messages");
-        command.addArgument(projectName);
-        this.sendCommandToServer(command);
-        this.receiveResponseFromServer();
-    }
-
-    public void sendMessageToOtherUser() throws IOException, ParseException {
-        Scanner scan = new Scanner(System.in);
-        Command command = new Command();
-
-        command.setCommand("sendMessage");
-        System.out.print("To: ");   command.addArgument(scan.nextLine());
-        System.out.print("Text: "); command.addArgument(scan.nextLine());
-
-        this.sendObjectToServer(command);
-        this.receiveResponseFromServer();
-    }
-
-    public void cancelProject() throws IOException{
-        Scanner scan = new Scanner(System.in);
-        CancelProject cancelProject = new CancelProject();
-
-        System.out.print("Project Name: "); cancelProject.setProjectName(scan.nextLine());
-
-        this.sendObjectToServer(cancelProject);
-        this.receiveResponseFromServer();
-    }
 }
