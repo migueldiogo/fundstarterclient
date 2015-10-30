@@ -4,7 +4,6 @@ import fundstarter.*;
 
 import java.io.*;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -33,8 +32,9 @@ public class ShowMenus {
     }
 
 
-    public void mainMenu() throws IOException, ParseException {
+    public boolean mainMenu() throws IOException, ParseException {
         ServerMessage message = null;
+        boolean voltar = true;
 
         Menu menu1 = new Menu();
         menu1.addOption("Login");
@@ -46,35 +46,40 @@ public class ShowMenus {
 
         int optionChosen = readOptionChosenByUser(menu1);
 
-        switch(optionChosen){
-            case 1:
-                do {
+        do {
+            switch (optionChosen) {
+                case 1:
+                    do {
+                        try {
+                            action.sendCommandToServer(action.login());
+                            message = action.receiveResponseFromServer();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    while (message.isErrorHappened());
+
+                    mainMenuWithUserLoggedIn();
+                    break;
+                case 2:
                     try {
-                        action.sendCommandToServer(action.login());
+                        action.sendCommandToServer(action.signUp());
                         message = action.receiveResponseFromServer();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                }
-                while (message.isErrorHappened());
 
-                mainMenuWithUserLoggedIn();
-                break;
-            case 2:
-                try{
-                    action.sendCommandToServer(action.signUp());
-                    message = action.receiveResponseFromServer();
-                } catch(IOException e){
-                    e.printStackTrace();
-                }
+                    this.mainMenu();
+                    break;
+                case 3:
+                    System.exit(0);
+                default:
+                    System.out.println("Please choose an option between 1 and 3");
+                    break;
+            }
+        }while(voltar);
 
-                this.mainMenu();
-                break;
-            case 3:
-                System.exit(0);
-            default:
-                System.out.println("Please choose an option between 1 and 3"); break;
-        }
+        return voltar;
     }
 
     public void mainMenuWithUserLoggedIn() throws IOException, ParseException {
@@ -99,7 +104,8 @@ public class ShowMenus {
                     voltar = !personalAreaSubMenu();
                     break;
                 case 3:
-                    this.mainMenu();
+                    action.logout();
+                    voltar = !this.mainMenu();
                     break;
                 default:
                     System.out.println("Choose an option between 1 and 3");
@@ -113,12 +119,12 @@ public class ShowMenus {
         Menu subMenu = new Menu();
 
         subMenu.addOption("View messages");
-        subMenu.addOption("Offer gift to other person");
         subMenu.addOption("View balance");
         subMenu.addOption("View rewards");
         subMenu.addOption("Offer reward to person");
         subMenu.addOption("Send message to other user");
         subMenu.addOption("Cancel project");
+        subMenu.addOption("Add Admin to Project");
         subMenu.addOption("Back");
         subMenu.setAnswerPrompt("Please enter your choice: ");
 
@@ -132,22 +138,23 @@ public class ShowMenus {
                     action.viewMessages();
                     break;
                 case 2:
-                    action.offerGiftToOtherPerson();
-                    break;
-                case 3:
                     action.viewBalance();
                     break;
-                case 4:
+                case 3:
                     action.viewRewards();
                     break;
-                case 5:
+                case 4:
                     action.offerRewardToPerson();
                     break;
-                case 6:
+                case 5:
                     action.sendMessageToOtherUser();
                     break;
-                case 7:
+                case 6:
                     action.cancelProject();
+                    break;
+                case 7:
+                    action.addAdmin();
+                    break;
                 case 8:
                     return false;
                 default:
@@ -169,7 +176,12 @@ public class ShowMenus {
         menu3.addOption("Pledge a project");
         menu3.addOption("Send Message to Project");
         menu3.addOption("Project Details");
+        menu3.addOption("Add reward to Project");
+        menu3.addOption("Remove reward to Project");
+        menu3.addOption("Add extra level");
+        menu3.addOption("Remove extra level");
         menu3.addOption("Back");
+        menu3.setAnswerPrompt("Please enter your choice: ");
 
         do{
             System.out.print(menu3.toString());
@@ -186,13 +198,21 @@ public class ShowMenus {
                 case 4:
                     action.pledge();                       break;
                 case 5:
-                    action.sendMessage();                  break;
+                    action.sendMessageToProject();         break;
                 case 6:
                     action.projectDetails();               break;
                 case 7:
+                    action.addRewardToProject();           break;
+                case 8:
+                    action.removeRewardFromProject();      break;
+                case 9:
+                    action.addExtraLevelToProject();       break;
+                case 10:
+                    action.removeExtraLevelToProject();    break;
+                case 11:
                     return false;
                 default:
-                    System.out.println("Choose an option between 1 and 7");     break;
+                    System.out.println("Choose an option between 1 and 11");     break;
             }
         }while(voltar);
 

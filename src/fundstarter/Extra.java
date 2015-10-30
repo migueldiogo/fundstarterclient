@@ -1,3 +1,4 @@
+
 package fundstarter;
 
 import java.io.Serializable;
@@ -7,25 +8,26 @@ import java.io.Serializable;
  */
 public class Extra implements Serializable{
 
-    private String username;
+    private double goalMin;
     private String projectName;
     private String description;
 
     private static final long serialVersionUID = 1L;
 
 
-    public Extra(String username, String projectName, String description) {
-        this.username = username;
+    public Extra(double goalMin, String projectName, String description) {
+        this.goalMin = goalMin;
         this.projectName = projectName;
         this.description = description;
     }
+    public Extra(){}
 
-    public String getUsername() {
-        return username;
+    public double getGoalMin() {
+        return goalMin;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setGoalMin(double goalMin) {
+        this.goalMin = goalMin;
     }
 
     public String getProjectName() {
@@ -42,5 +44,18 @@ public class Extra implements Serializable{
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    @Override
+    public String toString() {
+        return "Extra{" +
+                "goalMin=" + goalMin +
+                ", projectName='" + projectName + '\'' +
+                ", description='" + description + '\'' +
+                '}';
     }
 }

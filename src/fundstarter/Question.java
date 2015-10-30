@@ -19,6 +19,7 @@ public class Question implements Serializable{
         Question = question;
         this.answers = answers;
     }
+    public Question(){}
 
 
     public String getProjectName() {
@@ -43,6 +44,15 @@ public class Question implements Serializable{
 
     public void setQuestion(String question) {
         Question = question;
+    }
+
+    @Override
+    public String toString() {
+        return "Question{" +
+                "projectName='" + projectName + '\'' +
+                ", Question='" + Question + '\'' +
+                ", answers=" + answers +
+                '}';
     }
 }
 
