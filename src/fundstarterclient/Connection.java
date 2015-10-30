@@ -51,28 +51,18 @@ public class Connection {
 
     public void startCLI() {
         ShowMenus menus = new ShowMenus(inputStream, outputStream, this);
-
-        try {
-            menus.start();
-        }
-        catch (IOException e) {
-            handleServerFailOver();
-        }
-        catch (ParseException e) {
-            System.out.println("Parse Exception: " + e.getMessage());
-        }
-
+        menus.start();
     }
 
     public Socket handleServerFailOver(Command commandInOutbox, String usernameLoggedIn) {
         // o cliente tenta uma última vez ligar-se ao servidor primário
         try {
-
             socket = new Socket(socket.getInetAddress(), socket.getPort());
             outputStream = new ObjectOutputStream(socket.getOutputStream());
             inputStream = new ObjectInputStream(socket.getInputStream());
             if (!usernameLoggedIn.equals(""))
                 reLogin(usernameLoggedIn);
+            reSendCommand(commandInOutbox);
         } catch (IOException e) {
             try {
                 socket = new Socket(secondaryServerIP, serverPort);
@@ -80,9 +70,18 @@ public class Connection {
                 inputStream = new ObjectInputStream(socket.getInputStream());
                 if (!usernameLoggedIn.equals(""))
                     reLogin(usernameLoggedIn);
+                reSendCommand(commandInOutbox);
+
             } catch (IOException e2) {
                 System.exit(1);
             }
+        } finally {
+            if (socket != null)
+                try {
+                    socket.close();
+                } catch (IOException e2) {
+                    System.out.println("close:" + e2.getMessage());
+                }
         }
 
         return socket;

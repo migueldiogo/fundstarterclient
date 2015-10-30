@@ -26,16 +26,16 @@ public class ShowMenus {
         this.inputStream = inputStream;
         this.outputStream = outputStream;
         this.loggedPerson = "";
-        this.action = new Actions(inputStream, outputStream);
+        this.action = new Actions(inputStream, outputStream, connection);
         this.connection = connection;
     }
 
-    public void start() throws IOException, ParseException {
+    public void start() {
         mainMenu();
     }
 
 
-    public boolean mainMenu() throws IOException, ParseException {
+    public boolean mainMenu() {
         ServerMessage message = null;
         boolean voltar = true;
 
@@ -77,7 +77,7 @@ public class ShowMenus {
         return voltar;
     }
 
-    public boolean mainMenuWithUserLoggedIn() throws IOException, ParseException {
+    public boolean mainMenuWithUserLoggedIn() {
         boolean voltar = false;
 
         Menu menu2 = new Menu();
@@ -93,18 +93,10 @@ public class ShowMenus {
 
             switch (optionChosen) {
                 case 1:
-                    try {
-                        voltar = !projectMenuLoggedIn();
-                    } catch (IOException e) {
-                        connection.handleServerFailOver(action.getCommand(), loggedPerson);
-                    }
+                    voltar = !projectMenuLoggedIn();
                     break;
                 case 2:
-                    try {
-                        voltar = !personalAreaSubMenu();
-                    } catch (IOException e) {
-                        connection.handleServerFailOver(action.getCommand(), loggedPerson);
-                    }
+                    voltar = !personalAreaSubMenu();
                     break;
                 case 3:
                     try {
@@ -123,7 +115,7 @@ public class ShowMenus {
 
     }
 
-    public boolean personalAreaSubMenu() throws IOException, ParseException {
+    public boolean personalAreaSubMenu() {
         boolean voltar = true;
         Menu subMenu = new Menu();
         ServerMessage serverMessage = null;
@@ -230,7 +222,7 @@ public class ShowMenus {
         return true;
     }
 
-    public boolean projectMenuLoggedIn() throws IOException {
+    public boolean projectMenuLoggedIn() {
         boolean voltar = true;
         ServerMessage serverMessage = null;
         Menu menu3 = new Menu();

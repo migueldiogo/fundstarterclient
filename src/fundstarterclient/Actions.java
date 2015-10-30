@@ -18,10 +18,12 @@ public class Actions {
     private ObjectInputStream inputStream;
     private ObjectOutputStream outputStream;
     private Command command;
+    private Connection connection;
 
-    public Actions(ObjectInputStream inputStream, ObjectOutputStream outputStream) {
+    public Actions(ObjectInputStream inputStream, ObjectOutputStream outputStream, Connection connection) {
         this.inputStream = inputStream;
         this.outputStream = outputStream;
+        this.connection = connection;
     }
 
     public String login() throws IOException {
@@ -37,7 +39,11 @@ public class Actions {
             System.out.print("Password: ");
             command.addArgument(scan.nextLine());
 
-            sendCommandToServer(command);
+            try {
+                sendCommandToServer(command);
+            } catch (IOException e) {
+                connection.handleServerFailOver(command, "");
+            }
             serverMessage = receiveResponseFromServer();
         }
         while(serverMessage.isErrorHappened());
@@ -60,8 +66,14 @@ public class Actions {
             command.addArgument(scan.nextLine());
             System.out.print("Repeat Password: ");  command.addArgument(scan.nextLine());
 
-            sendCommandToServer(command);
+            try {
+                sendCommandToServer(command);
+            } catch (IOException e) {
+                connection.handleServerFailOver(command, "");
+            }
             serverMessage = receiveResponseFromServer();
+
+
         }
         while(serverMessage.isErrorHappened());
 
