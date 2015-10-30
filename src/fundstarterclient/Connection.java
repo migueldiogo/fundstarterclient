@@ -46,17 +46,21 @@ public class Connection {
             System.out.println("Connection: " + e.getMessage());
         }
 
+        startCLI();
+
 
     }
 
     public void startCLI() {
-        ShowMenus menus = new ShowMenus(inputStream, outputStream, this);
+        ShowMenus menus = new ShowMenus(this);
         menus.start();
     }
 
     public Socket handleServerFailOver(Command commandInOutbox, String usernameLoggedIn) {
         // o cliente tenta uma última vez ligar-se ao servidor primário
+        System.out.println("Server is not available. Command in outbox: " + commandInOutbox.getCommand());
         try {
+            System.out.println("Try to reestablish connection with primary server...");
             socket = new Socket(socket.getInetAddress(), socket.getPort());
             outputStream = new ObjectOutputStream(socket.getOutputStream());
             inputStream = new ObjectInputStream(socket.getInputStream());
@@ -65,6 +69,8 @@ public class Connection {
             reSendCommand(commandInOutbox);
         } catch (IOException e) {
             try {
+                System.out.println("Try to reestablish connection with backup server...");
+
                 socket = new Socket(secondaryServerIP, serverPort);
                 outputStream = new ObjectOutputStream(socket.getOutputStream());
                 inputStream = new ObjectInputStream(socket.getInputStream());
@@ -72,16 +78,12 @@ public class Connection {
                     reLogin(usernameLoggedIn);
                 reSendCommand(commandInOutbox);
 
+
             } catch (IOException e2) {
+                System.out.println("No server available... i'm out.");
+
                 System.exit(1);
             }
-        } finally {
-            if (socket != null)
-                try {
-                    socket.close();
-                } catch (IOException e2) {
-                    System.out.println("close:" + e2.getMessage());
-                }
         }
 
         return socket;
@@ -105,11 +107,18 @@ public class Connection {
     public void reSendCommand(Command commandInOutbox) throws IOException{
 
         outputStream.writeObject(commandInOutbox);
-        try {
+        /*try {
             System.out.println(inputStream.readObject().toString());
         } catch (ClassNotFoundException e) {
             System.out.println("Class Not Found: " + e.getMessage());;
-        }
+        }*/
     }
 
+    public ObjectInputStream getInputStream() {
+        return inputStream;
+    }
+
+    public ObjectOutputStream getOutputStream() {
+        return outputStream;
+    }
 }

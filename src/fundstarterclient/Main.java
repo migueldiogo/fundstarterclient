@@ -19,7 +19,7 @@ public class Main {
         System.out.println("Welcome to FundStarter!");
 
         try {
-            new Connection(primaryServerAddress, secondaryServerAddress, serverPort);
+            new Connection(InetAddress.getByName("192.168.1.33"), InetAddress.getByName("192.168.1.33"), serverPort);
         } catch (ParseException e) {
             e.printStackTrace();
         }

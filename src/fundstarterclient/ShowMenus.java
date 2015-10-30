@@ -3,6 +3,7 @@ package fundstarterclient;
 import fundstarter.*;
 
 import java.io.*;
+import java.net.Socket;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
@@ -14,19 +15,19 @@ import java.util.Scanner;
  */
 public class ShowMenus {
     private String loggedPerson;
-    private ObjectInputStream inputStream;
-    private ObjectOutputStream outputStream;
+   // private ObjectInputStream inputStream;
+   // private ObjectOutputStream outputStream;
     private Actions action;
     private Connection connection;
 
     public ShowMenus(Menu menu, String loggedPerson) {
         this.loggedPerson = loggedPerson;
     }
-    public ShowMenus(ObjectInputStream inputStream, ObjectOutputStream outputStream, Connection connection){
-        this.inputStream = inputStream;
-        this.outputStream = outputStream;
+    public ShowMenus(Connection connection){
+       // this.inputStream = inputStream;
+       // this.outputStream = outputStream;
         this.loggedPerson = "";
-        this.action = new Actions(inputStream, outputStream, connection);
+        this.action = new Actions(connection);
         this.connection = connection;
     }
 
@@ -52,11 +53,7 @@ public class ShowMenus {
         do {
             switch (optionChosen) {
                 case 1:
-                    try {
-                        loggedPerson = action.login();
-                    } catch (IOException e) {
-                        connection.handleServerFailOver(action.getCommand(), loggedPerson);
-                    }
+                    loggedPerson = action.login();
                     mainMenuWithUserLoggedIn();
                     break;
                 case 2:
@@ -64,7 +61,6 @@ public class ShowMenus {
                         action.signUp();
                     } catch (IOException e) {
                         connection.handleServerFailOver(action.getCommand(), loggedPerson);
-                    }
                     break;
                 case 3:
                     System.exit(0);

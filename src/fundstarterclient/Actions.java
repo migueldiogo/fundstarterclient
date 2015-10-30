@@ -15,18 +15,14 @@ import java.util.Scanner;
  * Created by xavier on 28-10-2015.
  */
 public class Actions {
-    private ObjectInputStream inputStream;
-    private ObjectOutputStream outputStream;
     private Command command;
     private Connection connection;
 
-    public Actions(ObjectInputStream inputStream, ObjectOutputStream outputStream, Connection connection) {
-        this.inputStream = inputStream;
-        this.outputStream = outputStream;
+    public Actions(Connection connection) {
         this.connection = connection;
     }
 
-    public String login() throws IOException {
+    public String login() {
         Scanner scan = new Scanner(System.in);
         ServerMessage serverMessage;
         String username = "";
@@ -41,10 +37,13 @@ public class Actions {
 
             try {
                 sendCommandToServer(command);
+                serverMessage = receiveResponseFromServer();
             } catch (IOException e) {
                 connection.handleServerFailOver(command, "");
+            } finally {
+                System.out.println(serverMessage.getContent().toString());
             }
-            serverMessage = receiveResponseFromServer();
+
         }
         while(serverMessage.isErrorHappened());
 
@@ -346,17 +345,17 @@ public class Actions {
 
 
     public void sendCommandToServer(Command command) throws IOException{
-        outputStream.writeObject(command);
+        connection.getOutputStream().writeObject(command);
     }
 
     public void sendObjectToServer(Object object) throws IOException {
-        outputStream.writeObject(object);
+        connection.getOutputStream().writeObject(object);
     }
 
     public ServerMessage receiveResponseFromServer() throws IOException{
         ServerMessage message = null;
         try {
-            message = (ServerMessage) inputStream.readObject();
+            message = (ServerMessage) connection.getInputStream().readObject();
         } catch (ClassNotFoundException e) {
             System.out.println("Class not Found: " + e.getMessage());
         }
