@@ -9,7 +9,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-
 /**
  * Created by xavier on 28-10-2015.
  */
@@ -358,8 +357,4 @@ public class Actions {
         this.sendCommandToServer(command);
         this.receiveResponseFromServer();
     }
-
-
-
-
 }
