@@ -71,14 +71,15 @@ public class Connection {
             socket = new Socket(socket.getInetAddress(), socket.getPort());
             outputStream = new ObjectOutputStream(socket.getOutputStream());
             inputStream = new ObjectInputStream(socket.getInputStream());
-            reLogin(usernameLoggedIn);
+            if (!usernameLoggedIn.equals(""))
+                reLogin(usernameLoggedIn);
         } catch (IOException e) {
             try {
                 socket = new Socket(secondaryServerIP, serverPort);
                 outputStream = new ObjectOutputStream(socket.getOutputStream());
                 inputStream = new ObjectInputStream(socket.getInputStream());
-                reLogin(usernameLoggedIn);
-
+                if (!usernameLoggedIn.equals(""))
+                    reLogin(usernameLoggedIn);
             } catch (IOException e2) {
                 System.exit(1);
             }
@@ -97,6 +98,16 @@ public class Connection {
         outputStream.writeObject(command);
         try {
             inputStream.readObject();
+        } catch (ClassNotFoundException e) {
+            System.out.println("Class Not Found: " + e.getMessage());;
+        }
+    }
+
+    public void reSendCommand(Command commandInOutbox) throws IOException{
+
+        outputStream.writeObject(commandInOutbox);
+        try {
+            System.out.println(inputStream.readObject().toString());
         } catch (ClassNotFoundException e) {
             System.out.println("Class Not Found: " + e.getMessage());;
         }
