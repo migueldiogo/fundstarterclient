@@ -15,39 +15,58 @@ import java.util.Scanner;
 public class Actions {
     private ObjectInputStream inputStream;
     private ObjectOutputStream outputStream;
+    private Command command;
 
     public Actions(ObjectInputStream inputStream, ObjectOutputStream outputStream) {
         this.inputStream = inputStream;
         this.outputStream = outputStream;
     }
 
-    public Command login(){
+    public String login() throws IOException {
         Scanner scan = new Scanner(System.in);
-        Command command = new Command();
+        ServerMessage serverMessage;
+        String username = "";
+        do {
+            command = new Command();
 
-        command.setCommand("login");
-        System.out.print("Username: "); command.addArgument(scan.nextLine());
-        System.out.print("Password: "); command.addArgument(scan.nextLine());
+            command.setCommand("login");
+            System.out.print("Username: ");
+            command.addArgument(username = scan.nextLine());
+            System.out.print("Password: ");
+            command.addArgument(scan.nextLine());
 
-        return command;
+            sendCommandToServer(command);
+            serverMessage = receiveResponseFromServer();
+        }
+        while(serverMessage.isErrorHappened());
+
+        return username;
+
     }
 
-    public Command signUp(){
+    public void signUp() throws IOException {
         Scanner scan = new Scanner(System.in);
-        Command command = new Command();
 
-        command.setCommand("signup");
-        System.out.print("Username: ");
-        command.addArgument(scan.nextLine());
-        System.out.print("Password: ");
-        command.addArgument(scan.nextLine());
-        System.out.print("Repeat Password: ");  command.addArgument(scan.nextLine());
+        ServerMessage serverMessage;
+        do {
+            command = new Command();
 
-        return command;
+            command.setCommand("signup");
+            System.out.print("Username: ");
+            command.addArgument(scan.nextLine());
+            System.out.print("Password: ");
+            command.addArgument(scan.nextLine());
+            System.out.print("Repeat Password: ");  command.addArgument(scan.nextLine());
+
+            sendCommandToServer(command);
+            serverMessage = receiveResponseFromServer();
+        }
+        while(serverMessage.isErrorHappened());
+
     }
 
     public void newProject() throws IOException {
-        Command command = new Command();
+        command = new Command();
         command.setCommand("newProject");
 
         Scanner scan = new Scanner(System.in);
@@ -105,7 +124,7 @@ public class Actions {
 
     public void pledge() throws IOException {
         Scanner scan = new Scanner(System.in);
-        Command command = new Command();
+        command = new Command();
 
         command.setCommand("pledge");
         System.out.print("Project Name: "); command.addArgument(scan.nextLine());
@@ -118,7 +137,7 @@ public class Actions {
 
     public void projectDetails() throws IOException {
         Scanner scan = new Scanner(System.in);
-        Command command = new Command();
+        command = new Command();
         Project receiveProject;
 
         command.setCommand("details");
@@ -132,7 +151,7 @@ public class Actions {
 
     public void sendMessageToProject() throws IOException {
         Scanner scan = new Scanner(System.in);
-        Command command = new Command();
+        command = new Command();
         Message newMessage = new Message();
 
         command.setCommand("sendMessageToProject");
@@ -146,7 +165,7 @@ public class Actions {
 
     public void offerRewardToPerson() throws IOException {
         Scanner scan = new Scanner(System.in);
-        Command command = new Command();
+        command = new Command();
 
         command.setCommand("sendReward");
         System.out.print("Project name: "); command.addArgument(scan.nextLine());
@@ -159,7 +178,7 @@ public class Actions {
 
     // View
     public void viewMessages() throws  IOException{
-        Command command = new Command();
+        command = new Command();
         ArrayList<Message> messages;
 
         command.setCommand("viewMessages");
@@ -171,7 +190,7 @@ public class Actions {
     }
 
     public void viewBalance() throws IOException {
-        Command command = new Command();
+        command = new Command();
 
         command.setCommand("viewBalance");
         this.sendCommandToServer(command);
@@ -179,7 +198,7 @@ public class Actions {
     }
 
     public void viewRewards() throws IOException {
-        Command command = new Command();
+        command = new Command();
         ArrayList<AttributedReward> rewards;
 
         command.setCommand("viewRewards");
@@ -189,6 +208,158 @@ public class Actions {
             System.out.println(reward.toString());
         }
     }
+
+
+
+
+    public void projectsInProgress() throws IOException{
+        command = new Command();
+        ArrayList<Project> projectsInProgress;
+        ServerMessage message = null;
+
+        command.setCommand("listInProgress");
+        this.sendCommandToServer(command);
+        message = receiveResponseFromServer();
+        if(!message.isErrorHappened()){
+            projectsInProgress = (ArrayList<Project>) message.getContent();
+            for(Project proj : projectsInProgress){
+                System.out.println(proj.toString());
+            }
+        }
+
+
+    }
+
+    public void projectsExpired() throws IOException{
+        command = new Command();
+        ArrayList<Project> projectsExpired;
+        ServerMessage message = null;
+
+        command.setCommand("listExpired");
+        this.sendCommandToServer(command);
+        message = receiveResponseFromServer();
+        if(!message.isErrorHappened()){
+            projectsExpired = (ArrayList<Project>)message.getContent();
+            for(Project proj : projectsExpired){
+                System.out.println(proj.toString());
+            }
+        }
+
+    }
+
+    public void listMessages(String projectName) throws IOException{
+        Scanner scan = new Scanner(System.in);
+        command = new Command();
+
+        command.setCommand("messages");
+        command.addArgument(projectName);
+        this.sendCommandToServer(command);
+        this.receiveResponseFromServer();
+    }
+
+    public void sendMessageToOtherUser() throws IOException {
+        Scanner scan = new Scanner(System.in);
+        command = new Command();
+
+        command.setCommand("sendMessage");
+        System.out.print("To: ");   command.addArgument(scan.nextLine());
+        System.out.print("Text: "); command.addArgument(scan.nextLine());
+
+        this.sendObjectToServer(command);
+        this.receiveResponseFromServer();
+    }
+
+    public void cancelProject() throws IOException{
+        Scanner scan = new Scanner(System.in);
+        command = new Command();
+
+        command.setCommand("cancelProject");
+        System.out.print("Project Name: "); command.addArgument(scan.nextLine());
+
+        this.sendObjectToServer(command);
+        this.receiveResponseFromServer();
+    }
+
+    public void addAdmin() throws IOException{
+        Scanner scan = new Scanner(System.in);
+        command = new Command();
+
+        command.setCommand("addAdminToProject");
+        System.out.print("Project Name: ");         command.addArgument(scan.nextLine());
+        System.out.print("New Admin Username: ");   command.addArgument(scan.nextLine());
+
+        this.sendObjectToServer(command);
+        this.receiveResponseFromServer();
+    }
+
+    public void logout() throws IOException{
+        command = new Command();
+
+        command.setCommand("logout");
+        this.sendObjectToServer(command);
+        this.receiveResponseFromServer();
+    }
+
+    public void addRewardToProject() throws IOException{
+        Scanner scan = new Scanner(System.in);
+        command = new Command();
+        Reward reward = new Reward();
+
+        command.setCommand("addRewardToProject");
+        System.out.print("Project Name: ");     reward.setProjectName(scan.nextLine());
+        System.out.print("Pledge min: ");       reward.setPledgeMin(scan.nextDouble()); scan.nextLine();
+        System.out.print("Gift name: ");        reward.setGiftName(scan.nextLine());
+
+        command.setAttachedObject(reward);
+        this.sendCommandToServer(command);
+        this.receiveResponseFromServer();
+    }
+
+    public void removeRewardFromProject() throws IOException{
+        Scanner scan = new Scanner(System.in);
+        command = new Command();
+        Reward reward = new Reward();
+
+        command.setCommand("removeRewardFromProject");
+        System.out.print("Project Name: ");     reward.setProjectName(scan.nextLine());
+        System.out.print("Pledge min: ");       reward.setPledgeMin(scan.nextDouble()); scan.nextLine();
+        System.out.print("Gift name: ");        reward.setGiftName(scan.nextLine());
+
+        command.setAttachedObject(reward);
+        this.sendCommandToServer(command);
+        this.receiveResponseFromServer();
+    }
+
+    public void addExtraLevelToProject() throws IOException{
+        Scanner scan = new Scanner(System.in);
+        command = new Command();
+        Extra extra = new Extra();
+
+        command.setCommand("addExtraToProject");
+        System.out.print("Project Name: ");     extra.setProjectName(scan.nextLine());
+        System.out.print("Min Goal: ");         extra.setGoalMin(scan.nextDouble());    scan.nextLine();
+        System.out.print("Description: ");      extra.setDescription(scan.nextLine());
+
+        command.setAttachedObject(extra);
+        this.sendCommandToServer(command);
+        this.receiveResponseFromServer();
+    }
+
+    public void removeExtraLevelToProject() throws IOException{
+        Scanner scan = new Scanner(System.in);
+        command = new Command();
+        Extra extra = new Extra();
+
+        command.setCommand("removeExtraFromProject");
+        System.out.print("Project Name: ");     extra.setProjectName(scan.nextLine());
+        System.out.print("Min Goal: ");         extra.setGoalMin(scan.nextDouble());    scan.nextLine();
+        System.out.print("Description: ");      extra.setDescription(scan.nextLine());
+
+        command.setAttachedObject(extra);
+        this.sendCommandToServer(command);
+        this.receiveResponseFromServer();
+    }
+
 
     public void sendCommandToServer(Command command) throws IOException{
         outputStream.writeObject(command);
@@ -209,152 +380,8 @@ public class Actions {
         return message;
     }
 
-
-    public void projectsInProgress() throws IOException{
-        Command command = new Command();
-        ArrayList<Project> projectsInProgress;
-        ServerMessage message = null;
-
-        command.setCommand("listInProgress");
-        this.sendCommandToServer(command);
-        message = receiveResponseFromServer();
-        if(!message.isErrorHappened()){
-            projectsInProgress = (ArrayList<Project>) message.getContent();
-            for(Project proj : projectsInProgress){
-                System.out.println(proj.toString());
-            }
-        }
-
-
+    public Command getCommand() {
+        return command;
     }
 
-    public void projectsExpired() throws IOException{
-        Command command = new Command();
-        ArrayList<Project> projectsExpired;
-        ServerMessage message = null;
-
-        command.setCommand("listExpired");
-        this.sendCommandToServer(command);
-        message = receiveResponseFromServer();
-        if(!message.isErrorHappened()){
-            projectsExpired = (ArrayList<Project>)message.getContent();
-            for(Project proj : projectsExpired){
-                System.out.println(proj.toString());
-            }
-        }
-
-    }
-
-    public void listMessages(String projectName) throws IOException{
-        Scanner scan = new Scanner(System.in);
-        Command command = new Command();
-
-        command.setCommand("messages");
-        command.addArgument(projectName);
-        this.sendCommandToServer(command);
-        this.receiveResponseFromServer();
-    }
-
-    public void sendMessageToOtherUser() throws IOException, ParseException {
-        Scanner scan = new Scanner(System.in);
-        Command command = new Command();
-
-        command.setCommand("sendMessage");
-        System.out.print("To: ");   command.addArgument(scan.nextLine());
-        System.out.print("Text: "); command.addArgument(scan.nextLine());
-
-        this.sendObjectToServer(command);
-        this.receiveResponseFromServer();
-    }
-
-    public void cancelProject() throws IOException{
-        Scanner scan = new Scanner(System.in);
-        Command command = new Command();
-
-        command.setCommand("cancelProject");
-        System.out.print("Project Name: "); command.addArgument(scan.nextLine());
-
-        this.sendObjectToServer(command);
-        this.receiveResponseFromServer();
-    }
-
-    public void addAdmin() throws IOException{
-        Scanner scan = new Scanner(System.in);
-        Command command = new Command();
-
-        command.setCommand("addAdminToProject");
-        System.out.print("Project Name: ");         command.addArgument(scan.nextLine());
-        System.out.print("New Admin Username: ");   command.addArgument(scan.nextLine());
-
-        this.sendObjectToServer(command);
-        this.receiveResponseFromServer();
-    }
-
-    public void logout() throws IOException{
-        Command command = new Command();
-
-        command.setCommand("logout");
-        this.sendObjectToServer(command);
-        this.receiveResponseFromServer();
-    }
-
-    public void addRewardToProject() throws IOException{
-        Scanner scan = new Scanner(System.in);
-        Command command = new Command();
-        Reward reward = new Reward();
-
-        command.setCommand("addRewardToProject");
-        System.out.print("Project Name: ");     reward.setProjectName(scan.nextLine());
-        System.out.print("Pledge min: ");       reward.setPledgeMin(scan.nextDouble()); scan.nextLine();
-        System.out.print("Gift name: ");        reward.setGiftName(scan.nextLine());
-
-        command.setAttachedObject(reward);
-        this.sendCommandToServer(command);
-        this.receiveResponseFromServer();
-    }
-
-    public void removeRewardFromProject() throws IOException{
-        Scanner scan = new Scanner(System.in);
-        Command command = new Command();
-        Reward reward = new Reward();
-
-        command.setCommand("removeRewardFromProject");
-        System.out.print("Project Name: ");     reward.setProjectName(scan.nextLine());
-        System.out.print("Pledge min: ");       reward.setPledgeMin(scan.nextDouble()); scan.nextLine();
-        System.out.print("Gift name: ");        reward.setGiftName(scan.nextLine());
-
-        command.setAttachedObject(reward);
-        this.sendCommandToServer(command);
-        this.receiveResponseFromServer();
-    }
-
-    public void addExtraLevelToProject() throws IOException{
-        Scanner scan = new Scanner(System.in);
-        Command command = new Command();
-        Extra extra = new Extra();
-
-        command.setCommand("addExtraToProject");
-        System.out.print("Project Name: ");     extra.setProjectName(scan.nextLine());
-        System.out.print("Min Goal: ");         extra.setGoalMin(scan.nextDouble());    scan.nextLine();
-        System.out.print("Description: ");      extra.setDescription(scan.nextLine());
-
-        command.setAttachedObject(extra);
-        this.sendCommandToServer(command);
-        this.receiveResponseFromServer();
-    }
-
-    public void removeExtraLevelToProject() throws IOException{
-        Scanner scan = new Scanner(System.in);
-        Command command = new Command();
-        Extra extra = new Extra();
-
-        command.setCommand("removeExtraFromProject");
-        System.out.print("Project Name: ");     extra.setProjectName(scan.nextLine());
-        System.out.print("Min Goal: ");         extra.setGoalMin(scan.nextDouble());    scan.nextLine();
-        System.out.print("Description: ");      extra.setDescription(scan.nextLine());
-
-        command.setAttachedObject(extra);
-        this.sendCommandToServer(command);
-        this.receiveResponseFromServer();
-    }
 }

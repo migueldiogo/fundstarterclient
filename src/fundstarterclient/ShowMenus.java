@@ -16,15 +16,17 @@ public class ShowMenus {
     private ObjectInputStream inputStream;
     private ObjectOutputStream outputStream;
     private Actions action;
+    private Connection connection;
 
     public ShowMenus(Menu menu, String loggedPerson) {
         this.loggedPerson = loggedPerson;
     }
-    public ShowMenus(ObjectInputStream inputStream, ObjectOutputStream outputStream){
+    public ShowMenus(ObjectInputStream inputStream, ObjectOutputStream outputStream, Connection connection){
         this.inputStream = inputStream;
         this.outputStream = outputStream;
         this.loggedPerson = "";
         this.action = new Actions(inputStream, outputStream);
+        this.connection = connection;
     }
 
     public void start() throws IOException, ParseException {
@@ -49,27 +51,19 @@ public class ShowMenus {
         do {
             switch (optionChosen) {
                 case 1:
-                    do {
-                        try {
-                            action.sendCommandToServer(action.login());
-                            message = action.receiveResponseFromServer();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                    try {
+                        loggedPerson = action.login();
+                    } catch (IOException e) {
+                        connection.handleServerFailOver(action.getCommand(), loggedPerson);
                     }
-                    while (message.isErrorHappened());
-
                     mainMenuWithUserLoggedIn();
                     break;
                 case 2:
-                    try {
-                        action.sendCommandToServer(action.signUp());
-                        message = action.receiveResponseFromServer();
+                    try{
+                        action.signUp();
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        connection.handleServerFailOver(action.getCommand(), loggedPerson);
                     }
-
-                    this.mainMenu();
                     break;
                 case 3:
                     System.exit(0);
@@ -82,7 +76,7 @@ public class ShowMenus {
         return voltar;
     }
 
-    public void mainMenuWithUserLoggedIn() throws IOException, ParseException {
+    public boolean mainMenuWithUserLoggedIn() throws IOException, ParseException {
         boolean voltar = false;
 
         Menu menu2 = new Menu();
@@ -98,19 +92,33 @@ public class ShowMenus {
 
             switch (optionChosen) {
                 case 1:
-                    voltar = !projectMenuLoggedIn();
+                    try {
+                        voltar = !projectMenuLoggedIn();
+                    } catch (IOException e) {
+                        connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    }
                     break;
                 case 2:
-                    voltar = !personalAreaSubMenu();
+                    try {
+                        voltar = !personalAreaSubMenu();
+                    } catch (IOException e) {
+                        connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    }
                     break;
                 case 3:
-                    action.logout();
-                    voltar = !this.mainMenu();
+                    try {
+                        action.logout();
+                    } catch (IOException e) {
+                        connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    }
+                    voltar = false;
                     break;
                 default:
                     System.out.println("Choose an option between 1 and 3");
             }
         } while (voltar);
+
+        return true;
 
     }
 
@@ -135,25 +143,53 @@ public class ShowMenus {
 
             switch (optionChosen) {
                 case 1:
-                    action.viewMessages();
+                    try {
+                        action.viewMessages();
+                    } catch (IOException e) {
+                        connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    }
                     break;
                 case 2:
-                    action.viewBalance();
+                    try {
+                        action.viewBalance();
+                    } catch (IOException e) {
+                        connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    }
                     break;
                 case 3:
-                    action.viewRewards();
+                    try {
+                        action.viewRewards();
+                    } catch (IOException e) {
+                        connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    }
                     break;
                 case 4:
-                    action.offerRewardToPerson();
+                    try {
+                        action.offerRewardToPerson();
+                    } catch (IOException e) {
+                        connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    }
                     break;
                 case 5:
-                    action.sendMessageToOtherUser();
+                    try {
+                        action.sendMessageToOtherUser();
+                    } catch (IOException e) {
+                        connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    }
                     break;
                 case 6:
-                    action.cancelProject();
+                    try {
+                        action.cancelProject();
+                    } catch (IOException e) {
+                        connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    }
                     break;
                 case 7:
-                    action.addAdmin();
+                    try {
+                        action.addAdmin();
+                    } catch (IOException e) {
+                        connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    }
                     break;
                 case 8:
                     return false;
@@ -190,25 +226,80 @@ public class ShowMenus {
 
             switch(optionChosen){
                 case 1:
-                    action.projectsInProgress();           break;
+                    try {
+                        action.projectsInProgress();
+                    } catch (IOException e) {
+                        connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    }
+                    break;
                 case 2:
-                    action.projectsExpired();              break;
+                    try {
+                        action.projectsExpired();
+                    } catch (IOException e) {
+                        connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    }
+                    break;
                 case 3:
-                    action.newProject();                   break;
+                    try {
+                        action.newProject();
+                    } catch (IOException e) {
+                        connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    }
+                    break;
+
                 case 4:
-                    action.pledge();                       break;
+                    try {
+                        action.pledge();
+                    } catch (IOException e) {
+                        connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    }
+                    break;
+
                 case 5:
-                    action.sendMessageToProject();         break;
+                    try {
+                        action.sendMessageToProject();
+                    } catch (IOException e) {
+                        connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    }
+                    break;
+
                 case 6:
-                    action.projectDetails();               break;
+                    try {
+                        action.projectDetails();
+                    } catch (IOException e) {
+                        connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    }
+                    break;
+
                 case 7:
-                    action.addRewardToProject();           break;
+                    try {
+                        action.addRewardToProject();
+                    } catch (IOException e) {
+                        connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    }
+                    break;
+
                 case 8:
-                    action.removeRewardFromProject();      break;
+                    try {
+                        action.removeRewardFromProject();
+                    } catch (IOException e) {
+                        connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    }
+                    break;
                 case 9:
-                    action.addExtraLevelToProject();       break;
+                    try{
+                        action.addExtraLevelToProject();
+                    } catch (IOException e) {
+                        connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    }
+                    break;
                 case 10:
-                    action.removeExtraLevelToProject();    break;
+                    try {
+                        action.removeExtraLevelToProject();
+                    } catch (IOException e) {
+                        connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    }
+                    break;
                 case 11:
                     return false;
                 default:

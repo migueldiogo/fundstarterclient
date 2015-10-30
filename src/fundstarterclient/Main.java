@@ -10,10 +10,10 @@ public class Main {
         //args[1] <- hostname of destination (Backup Server)
 
         Socket s = null;
-        int serversocket = 8200;
+        int serverPort = 8200;
 
         try {
-            s = new Socket(args[0], serversocket);
+            s = new Socket(args[0], serverPort);
 
             System.out.println("Welcome to FundStarter!");
 
