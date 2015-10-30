@@ -1,10 +1,12 @@
 package fundstarterclient;
 
+import com.sun.corba.se.spi.activation.Server;
 import fundstarter.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.rmi.ServerError;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -65,7 +67,7 @@ public class Actions {
 
     }
 
-    public void newProject() throws IOException {
+    public ServerMessage newProject() throws IOException {
         command = new Command();
         command.setCommand("newProject");
 
@@ -119,10 +121,10 @@ public class Actions {
         command.setAttachedObject(newProject);
 
         this.sendCommandToServer(command);
-        this.receiveResponseFromServer();
+        return this.receiveResponseFromServer();
     }
 
-    public void pledge() throws IOException {
+    public ServerMessage pledge() throws IOException {
         Scanner scan = new Scanner(System.in);
         command = new Command();
 
@@ -132,10 +134,10 @@ public class Actions {
         System.out.print("Decision: ");     command.addArgument(scan.nextLine());
 
         this.sendCommandToServer(command);
-        this.receiveResponseFromServer();
+        return this.receiveResponseFromServer();
     }
 
-    public void projectDetails() throws IOException {
+    public ServerMessage projectDetails() throws IOException {
         Scanner scan = new Scanner(System.in);
         command = new Command();
         Project receiveProject;
@@ -144,12 +146,10 @@ public class Actions {
         System.out.print("Choose project: ");   command.addArgument(scan.nextLine());
 
         this.sendCommandToServer(command);
-        receiveProject = (Project) receiveResponseFromServer().getContent();
-        if(receiveProject != null)
-            receiveProject.toString();
+        return this.receiveResponseFromServer();
     }
 
-    public void sendMessageToProject() throws IOException {
+    public ServerMessage sendMessageToProject() throws IOException {
         Scanner scan = new Scanner(System.in);
         command = new Command();
         Message newMessage = new Message();
@@ -160,10 +160,10 @@ public class Actions {
 
         command.setAttachedObject(newMessage);
         this.sendCommandToServer(command);
-        this.receiveResponseFromServer();
+        return this.receiveResponseFromServer();
     }
 
-    public void offerRewardToPerson() throws IOException {
+    public ServerMessage offerRewardToPerson() throws IOException {
         Scanner scan = new Scanner(System.in);
         command = new Command();
 
@@ -173,78 +173,50 @@ public class Actions {
         System.out.print("Person name: ");  command.addArgument(scan.nextLine());
 
         this.sendCommandToServer(command);
-        this.receiveResponseFromServer();
+        return this.receiveResponseFromServer();
     }
 
     // View
-    public void viewMessages() throws  IOException{
+    public ServerMessage viewMessages() throws  IOException{
         command = new Command();
-        ArrayList<Message> messages;
 
         command.setCommand("viewMessages");
         this.sendCommandToServer(command);
-        messages = (ArrayList<Message>)receiveResponseFromServer().getContent();
-        for(Message mess : messages){
-            System.out.println(mess.toString());
-        }
+        return this.receiveResponseFromServer();
     }
 
-    public void viewBalance() throws IOException {
+    public ServerMessage viewBalance() throws IOException {
         command = new Command();
 
         command.setCommand("viewBalance");
         this.sendCommandToServer(command);
-        this.receiveResponseFromServer();
+        return this.receiveResponseFromServer();
     }
 
-    public void viewRewards() throws IOException {
+    public ServerMessage viewRewards() throws IOException {
         command = new Command();
-        ArrayList<AttributedReward> rewards;
 
         command.setCommand("viewRewards");
         sendCommandToServer(command);
-        rewards = (ArrayList<AttributedReward>)receiveResponseFromServer().getContent();
-        for(AttributedReward reward : rewards){
-            System.out.println(reward.toString());
-        }
+        return receiveResponseFromServer();
     }
 
-
-
-
-    public void projectsInProgress() throws IOException{
+    public ServerMessage projectsInProgress() throws IOException{
         command = new Command();
-        ArrayList<Project> projectsInProgress;
-        ServerMessage message = null;
 
         command.setCommand("listInProgress");
         this.sendCommandToServer(command);
-        message = receiveResponseFromServer();
-        if(!message.isErrorHappened()){
-            projectsInProgress = (ArrayList<Project>) message.getContent();
-            for(Project proj : projectsInProgress){
-                System.out.println(proj.toString());
-            }
-        }
-
-
+        return this.receiveResponseFromServer();
     }
 
-    public void projectsExpired() throws IOException{
+    public ServerMessage projectsExpired() throws IOException{
         command = new Command();
         ArrayList<Project> projectsExpired;
         ServerMessage message = null;
 
         command.setCommand("listExpired");
         this.sendCommandToServer(command);
-        message = receiveResponseFromServer();
-        if(!message.isErrorHappened()){
-            projectsExpired = (ArrayList<Project>)message.getContent();
-            for(Project proj : projectsExpired){
-                System.out.println(proj.toString());
-            }
-        }
-
+        return this.receiveResponseFromServer();
     }
 
     public void listMessages(String projectName) throws IOException{
@@ -257,7 +229,7 @@ public class Actions {
         this.receiveResponseFromServer();
     }
 
-    public void sendMessageToOtherUser() throws IOException {
+    public ServerMessage sendMessageToOtherUser() throws IOException {
         Scanner scan = new Scanner(System.in);
         command = new Command();
 
@@ -266,10 +238,10 @@ public class Actions {
         System.out.print("Text: "); command.addArgument(scan.nextLine());
 
         this.sendObjectToServer(command);
-        this.receiveResponseFromServer();
+        return this.receiveResponseFromServer();
     }
 
-    public void cancelProject() throws IOException{
+    public ServerMessage cancelProject() throws IOException{
         Scanner scan = new Scanner(System.in);
         command = new Command();
 
@@ -277,10 +249,10 @@ public class Actions {
         System.out.print("Project Name: "); command.addArgument(scan.nextLine());
 
         this.sendObjectToServer(command);
-        this.receiveResponseFromServer();
+        return this.receiveResponseFromServer();
     }
 
-    public void addAdmin() throws IOException{
+    public ServerMessage addAdmin() throws IOException{
         Scanner scan = new Scanner(System.in);
         command = new Command();
 
@@ -289,7 +261,7 @@ public class Actions {
         System.out.print("New Admin Username: ");   command.addArgument(scan.nextLine());
 
         this.sendObjectToServer(command);
-        this.receiveResponseFromServer();
+        return this.receiveResponseFromServer();
     }
 
     public void logout() throws IOException{
@@ -300,7 +272,7 @@ public class Actions {
         this.receiveResponseFromServer();
     }
 
-    public void addRewardToProject() throws IOException{
+    public ServerMessage addRewardToProject() throws IOException{
         Scanner scan = new Scanner(System.in);
         command = new Command();
         Reward reward = new Reward();
@@ -312,10 +284,10 @@ public class Actions {
 
         command.setAttachedObject(reward);
         this.sendCommandToServer(command);
-        this.receiveResponseFromServer();
+        return this.receiveResponseFromServer();
     }
 
-    public void removeRewardFromProject() throws IOException{
+    public ServerMessage removeRewardFromProject() throws IOException{
         Scanner scan = new Scanner(System.in);
         command = new Command();
         Reward reward = new Reward();
@@ -327,10 +299,10 @@ public class Actions {
 
         command.setAttachedObject(reward);
         this.sendCommandToServer(command);
-        this.receiveResponseFromServer();
+        return this.receiveResponseFromServer();
     }
 
-    public void addExtraLevelToProject() throws IOException{
+    public ServerMessage addExtraLevelToProject() throws IOException{
         Scanner scan = new Scanner(System.in);
         command = new Command();
         Extra extra = new Extra();
@@ -342,10 +314,10 @@ public class Actions {
 
         command.setAttachedObject(extra);
         this.sendCommandToServer(command);
-        this.receiveResponseFromServer();
+        return this.receiveResponseFromServer();
     }
 
-    public void removeExtraLevelToProject() throws IOException{
+    public ServerMessage removeExtraLevelToProject() throws IOException{
         Scanner scan = new Scanner(System.in);
         command = new Command();
         Extra extra = new Extra();
@@ -357,7 +329,7 @@ public class Actions {
 
         command.setAttachedObject(extra);
         this.sendCommandToServer(command);
-        this.receiveResponseFromServer();
+        return this.receiveResponseFromServer();
     }
 
 
@@ -373,7 +345,6 @@ public class Actions {
         ServerMessage message = null;
         try {
             message = (ServerMessage) inputStream.readObject();
-            System.out.println(message.getContent());
         } catch (ClassNotFoundException e) {
             System.out.println("Class not Found: " + e.getMessage());
         }

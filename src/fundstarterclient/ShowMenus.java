@@ -4,6 +4,7 @@ import fundstarter.*;
 
 import java.io.*;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -125,6 +126,7 @@ public class ShowMenus {
     public boolean personalAreaSubMenu() throws IOException, ParseException {
         boolean voltar = true;
         Menu subMenu = new Menu();
+        ServerMessage serverMessage = null;
 
         subMenu.addOption("View messages");
         subMenu.addOption("View balance");
@@ -144,51 +146,77 @@ public class ShowMenus {
             switch (optionChosen) {
                 case 1:
                     try {
-                        action.viewMessages();
+                        serverMessage = action.viewMessages();
                     } catch (IOException e) {
                         connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    } finally {
+                        if(serverMessage.isErrorHappened())
+                            System.out.println(serverMessage.getContent());
+                        else{
+                            for(Message message : (ArrayList<Message>) serverMessage.getContent()){
+                                System.out.println(message.toString());
+                            }
+                        }
                     }
                     break;
                 case 2:
                     try {
-                        action.viewBalance();
+                        serverMessage = action.viewBalance();
                     } catch (IOException e) {
                         connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    } finally {
+                        System.out.println(serverMessage.getContent());
                     }
                     break;
                 case 3:
                     try {
-                        action.viewRewards();
+                        serverMessage = action.viewRewards();
                     } catch (IOException e) {
                         connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    } finally {
+                        if(serverMessage.isErrorHappened())
+                            System.out.println(serverMessage.getContent());
+                        else{
+                            for(Reward reward : (ArrayList<Reward>) serverMessage.getContent()){
+                                System.out.println(reward.toString());
+                            }
+                        }
                     }
                     break;
                 case 4:
                     try {
-                        action.offerRewardToPerson();
+                        serverMessage = action.offerRewardToPerson();
                     } catch (IOException e) {
                         connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    } finally {
+                        System.out.println(serverMessage.getContent());
                     }
                     break;
                 case 5:
                     try {
-                        action.sendMessageToOtherUser();
+                        serverMessage = action.sendMessageToOtherUser();
                     } catch (IOException e) {
                         connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    } finally {
+                        System.out.println(serverMessage.getContent());
                     }
                     break;
                 case 6:
                     try {
-                        action.cancelProject();
+                        serverMessage = action.cancelProject();
                     } catch (IOException e) {
                         connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    } finally {
+                        System.out.println(serverMessage.getContent());
                     }
                     break;
                 case 7:
                     try {
-                        action.addAdmin();
+                        serverMessage = action.addAdmin();
                     } catch (IOException e) {
                         connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    } finally {
+                        System.out.println(serverMessage.getContent());
                     }
                     break;
                 case 8:
@@ -204,6 +232,7 @@ public class ShowMenus {
 
     public boolean projectMenuLoggedIn() throws IOException {
         boolean voltar = true;
+        ServerMessage serverMessage = null;
         Menu menu3 = new Menu();
 
         menu3.addOption("Projects in Progress");
@@ -227,77 +256,110 @@ public class ShowMenus {
             switch(optionChosen){
                 case 1:
                     try {
-                        action.projectsInProgress();
+                        serverMessage = action.projectsInProgress();
                     } catch (IOException e) {
                         connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    } finally {
+                        if(serverMessage.isErrorHappened())
+                            System.out.println(serverMessage.getContent());
+                        else{
+                            for(Project proj : (ArrayList<Project>) serverMessage.getContent()){
+                                System.out.println(proj.toString());
+                            }
+                        }
                     }
                     break;
                 case 2:
                     try {
-                        action.projectsExpired();
+                        serverMessage = action.projectsExpired();
                     } catch (IOException e) {
                         connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    } finally {
+                        if(serverMessage.isErrorHappened())
+                            System.out.println(serverMessage.getContent());
+                        else{
+                            for(Project proj : (ArrayList<Project>) serverMessage.getContent()){
+                                System.out.println(proj.toString());
+                            }
+                        }
                     }
                     break;
                 case 3:
                     try {
-                        action.newProject();
+                        serverMessage = action.newProject();
                     } catch (IOException e) {
                         connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    } finally {
+                        System.out.println(serverMessage.getContent());
                     }
                     break;
 
                 case 4:
                     try {
-                        action.pledge();
+                        serverMessage = action.pledge();
                     } catch (IOException e) {
                         connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    } finally {
+                        System.out.println(serverMessage.getContent());
                     }
                     break;
 
                 case 5:
                     try {
-                        action.sendMessageToProject();
+                        serverMessage = action.sendMessageToProject();
                     } catch (IOException e) {
                         connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    }
+                    finally {
+                        System.out.println(serverMessage.getContent());
                     }
                     break;
 
                 case 6:
                     try {
-                        action.projectDetails();
+                        serverMessage = action.projectDetails();
                     } catch (IOException e) {
                         connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    } finally {
+                        System.out.println(serverMessage.getContent().toString());
                     }
                     break;
 
                 case 7:
                     try {
-                        action.addRewardToProject();
+                        serverMessage = action.addRewardToProject();
                     } catch (IOException e) {
                         connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    } finally {
+                        System.out.println(serverMessage.getContent());
                     }
                     break;
 
                 case 8:
                     try {
-                        action.removeRewardFromProject();
+                        serverMessage = action.removeRewardFromProject();
                     } catch (IOException e) {
                         connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    } finally {
+                        System.out.println(serverMessage.getContent());
                     }
                     break;
                 case 9:
                     try{
-                        action.addExtraLevelToProject();
+                        serverMessage = action.addExtraLevelToProject();
                     } catch (IOException e) {
                         connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    } finally {
+                        System.out.println(serverMessage.getContent());
                     }
                     break;
                 case 10:
                     try {
-                        action.removeExtraLevelToProject();
+                        serverMessage = action.removeExtraLevelToProject();
                     } catch (IOException e) {
                         connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    } finally {
+                        System.out.println(serverMessage.getContent());
                     }
                     break;
                 case 11:
