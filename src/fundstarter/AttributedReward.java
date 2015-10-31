@@ -10,6 +10,7 @@ public class AttributedReward implements Serializable{
     private String projectName;
     private String giftName;
     private String sendTo;
+    private boolean done;
 
     private static final long serialVersionUID = 1L;
 
@@ -20,6 +21,15 @@ public class AttributedReward implements Serializable{
         this.giftName = giftName;
         this.sendTo = sender;
     }
+
+    public AttributedReward(String username, String projectName, String giftName, String sender, boolean done) {
+        this.sendFrom = username;
+        this.projectName = projectName;
+        this.giftName = giftName;
+        this.sendTo = sender;
+        this.done = done;
+    }
+
     public AttributedReward(){}
 
 
@@ -53,6 +63,14 @@ public class AttributedReward implements Serializable{
 
     public void setSendTo(String sendTo) {
         this.sendTo = sendTo;
+    }
+
+    public boolean getDone() {
+        return done;
+    }
+
+    public void setDone(boolean done) {
+        this.done = done;
     }
 
     @Override

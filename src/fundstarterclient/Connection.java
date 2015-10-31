@@ -6,11 +6,9 @@ import fundstarter.ServerMessage;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.text.ParseException;
-import java.util.Scanner;
 
 /**
  * Created by xavier on 26-10-2015.

@@ -3,8 +3,6 @@ package fundstarterclient;
 import fundstarter.*;
 
 import java.io.*;
-import java.net.Socket;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -15,19 +13,12 @@ import java.util.Scanner;
  */
 public class ShowMenus {
     private String loggedPerson;
-   // private ObjectInputStream inputStream;
-   // private ObjectOutputStream outputStream;
-    private Actions action;
+    private Action action;
     private Connection connection;
 
-    public ShowMenus(Menu menu, String loggedPerson) {
-        this.loggedPerson = loggedPerson;
-    }
+
     public ShowMenus(Connection connection){
-       // this.inputStream = inputStream;
-       // this.outputStream = outputStream;
         this.loggedPerson = "";
-        this.action = new Actions(connection);
         this.connection = connection;
     }
 
@@ -55,10 +46,12 @@ public class ShowMenus {
 
             switch (optionChosen) {
                 case 1:
+                    action = new Action(connection);
                     loggedPerson = action.login();
                     voltar = mainMenuWithUserLoggedIn();
                     break;
                 case 2:
+                    action = new Action(connection);
                     try{
                         action.signUp();
                     } catch (IOException e) {
@@ -98,6 +91,7 @@ public class ShowMenus {
                     voltar = !personalAreaSubMenu();
                     break;
                 case 3:
+                    action = new Action(connection);
                     try {
                         action.logout();
                     } catch (IOException e) {
@@ -136,6 +130,7 @@ public class ShowMenus {
 
             switch (optionChosen) {
                 case 1:
+                    action = new Action(connection);
                     try {
                         serverMessage = action.viewMessages();
                     } catch (IOException e) {
@@ -144,19 +139,20 @@ public class ShowMenus {
                         if(serverMessage.isErrorHappened())
                             System.out.println(serverMessage.getContent());
                         else{
-                            for(Message message : (ArrayList<Message>) serverMessage.getContent()){
-                                System.out.println(message.toString());
-                            }
+                            new Table().printTableOfMessages((ArrayList<Message>)serverMessage.getContent());
+
                         }
                     }
                     break;
                 case 2:
+                    action = new Action(connection);
                     try {
                         serverMessage = action.viewBalance();
                     } catch (IOException e) {
                         connection.handleServerFailOver(action.getCommand(), loggedPerson);
                     } finally {
-                        System.out.println(serverMessage.getContent());
+                        new Table("Balance", serverMessage.getContent() + "€").printTable();
+                        //System.out.println(serverMessage.getContent());
                     }
                     break;
                 case 3:
@@ -168,13 +164,18 @@ public class ShowMenus {
                         if(serverMessage.isErrorHappened())
                             System.out.println(serverMessage.getContent());
                         else{
+                            new Table().printTableOfAttributedRewards((ArrayList<AttributedReward>) serverMessage.getContent());
+
+                            /*
                             for(Reward reward : (ArrayList<Reward>) serverMessage.getContent()){
                                 System.out.println(reward.toString());
                             }
+                            */
                         }
                     }
                     break;
                 case 4:
+                    action = new Action(connection);
                     try {
                         serverMessage = action.offerRewardToPerson();
                     } catch (IOException e) {
@@ -184,6 +185,7 @@ public class ShowMenus {
                     }
                     break;
                 case 5:
+                    action = new Action(connection);
                     try {
                         serverMessage = action.sendMessageToOtherUser();
                     } catch (IOException e) {
@@ -193,6 +195,7 @@ public class ShowMenus {
                     }
                     break;
                 case 6:
+                    action = new Action(connection);
                     try {
                         serverMessage = action.cancelProject();
                     } catch (IOException e) {
@@ -202,6 +205,7 @@ public class ShowMenus {
                     }
                     break;
                 case 7:
+                    action = new Action(connection);
                     try {
                         serverMessage = action.addAdmin();
                     } catch (IOException e) {
@@ -246,6 +250,7 @@ public class ShowMenus {
 
             switch(optionChosen){
                 case 1:
+                    action = new Action(connection);
                     try {
                         serverMessage = action.projectsInProgress();
                     } catch (IOException e) {
@@ -254,13 +259,13 @@ public class ShowMenus {
                         if(serverMessage.isErrorHappened())
                             System.out.println(serverMessage.getContent());
                         else{
-                            for(Project proj : (ArrayList<Project>) serverMessage.getContent()){
-                                System.out.println(proj.toString());
-                            }
+                            new Table().printTableOfProjects((ArrayList<Project>) serverMessage.getContent());
+
                         }
                     }
                     break;
                 case 2:
+                    action = new Action(connection);
                     try {
                         serverMessage = action.projectsExpired();
                     } catch (IOException e) {
@@ -269,13 +274,12 @@ public class ShowMenus {
                         if(serverMessage.isErrorHappened())
                             System.out.println(serverMessage.getContent());
                         else{
-                            for(Project proj : (ArrayList<Project>) serverMessage.getContent()){
-                                System.out.println(proj.toString());
-                            }
+                            new Table().printTableOfProjects((ArrayList<Project>) serverMessage.getContent());
                         }
                     }
                     break;
                 case 3:
+                    action = new Action(connection);
                     try {
                         serverMessage = action.newProject();
                     } catch (IOException e) {
@@ -286,6 +290,7 @@ public class ShowMenus {
                     break;
 
                 case 4:
+                    action = new Action(connection);
                     try {
                         serverMessage = action.pledge();
                     } catch (IOException e) {
@@ -296,6 +301,7 @@ public class ShowMenus {
                     break;
 
                 case 5:
+                    action = new Action(connection);
                     try {
                         serverMessage = action.sendMessageToProject();
                     } catch (IOException e) {
@@ -307,6 +313,7 @@ public class ShowMenus {
                     break;
 
                 case 6:
+                    action = new Action(connection);
                     try {
                         serverMessage = action.projectDetails();
                     } catch (IOException e) {
@@ -317,6 +324,7 @@ public class ShowMenus {
                     break;
 
                 case 7:
+                    action = new Action(connection);
                     try {
                         serverMessage = action.addRewardToProject();
                     } catch (IOException e) {
@@ -327,6 +335,7 @@ public class ShowMenus {
                     break;
 
                 case 8:
+                    action = new Action(connection);
                     try {
                         serverMessage = action.removeRewardFromProject();
                     } catch (IOException e) {
@@ -336,6 +345,7 @@ public class ShowMenus {
                     }
                     break;
                 case 9:
+                    action = new Action(connection);
                     try{
                         serverMessage = action.addExtraLevelToProject();
                     } catch (IOException e) {
@@ -345,6 +355,7 @@ public class ShowMenus {
                     }
                     break;
                 case 10:
+                    action = new Action(connection);
                     try {
                         serverMessage = action.removeExtraLevelToProject();
                     } catch (IOException e) {

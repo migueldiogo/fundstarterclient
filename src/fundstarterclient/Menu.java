@@ -37,7 +37,7 @@ public class Menu {
             result.append("\n");
         }
         result.append(answerPrompt);
-        System.out.println("\n");
+        System.out.println();
 
         return result.toString();
     }

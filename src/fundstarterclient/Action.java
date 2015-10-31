@@ -1,25 +1,21 @@
 package fundstarterclient;
 
-import com.sun.corba.se.spi.activation.Server;
 import fundstarter.*;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.rmi.ServerError;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
  * Created by xavier on 28-10-2015.
  */
-public class Actions {
+public class Action {
     private Command command;
     private Connection connection;
 
-    public Actions(Connection connection) {
+    public Action(Connection connection) {
         this.connection = connection;
+        System.out.println();
     }
 
     public String login() {
@@ -58,6 +54,7 @@ public class Actions {
         do {
             command = new Command();
 
+
             command.setCommand("signup");
             System.out.print("Username: ");
             command.addArgument(scan.nextLine());
@@ -95,11 +92,21 @@ public class Actions {
         String projectName = "", input = "";
         double pledgeMin, goalMin;
 
-        System.out.print("Project Name: "); newProject.setName(projectName = scan.nextLine());
-        System.out.print("Description: ");  newProject.setDescription(scan.nextLine());
-        System.out.print("Limit date (YYYYMMDD): "); newProject.setDate(scan.nextLine());
-        System.out.print("Goal: "); newProject.setGoal(scan.nextDouble());  scan.nextLine();
-        System.out.print("Question: "); question.setQuestion(scan.nextLine());
+        System.out.print("Project Name: ");
+        newProject.setName(projectName = scan.nextLine());
+
+        System.out.print("Description: ");
+        newProject.setDescription(scan.nextLine());
+
+        System.out.print("Limit date (YYYYMMDD): ");
+        newProject.setDate(scan.nextLine());
+
+        System.out.print("Goal: ");
+        newProject.setGoal(scan.nextDouble());
+        scan.nextLine();
+
+        System.out.print("Question: ");
+        question.setQuestion(scan.nextLine());
         question.setProjectName(projectName);
 
         System.out.print("Answers: ");
@@ -117,8 +124,11 @@ public class Actions {
         do {
             Reward reward = new Reward();
             reward.setProjectName(projectName);
-            System.out.print("Min pledge: ");   reward.setPledgeMin(pledgeMin = scan.nextDouble()); scan.nextLine();
-            System.out.print("Reward: ");       reward.setGiftName(scan.nextLine());
+            System.out.print("Min pledge: ");
+            reward.setPledgeMin(pledgeMin = scan.nextDouble());
+            scan.nextLine();
+            System.out.print("Reward: ");
+            reward.setGiftName(scan.nextLine());
             if(reward.getPledgeMin() != 0)
                 rewards.add(reward);
         } while(pledgeMin != 0);
@@ -127,8 +137,10 @@ public class Actions {
         do {
             Extra extra = new Extra();
             extra.setProjectName(projectName);
-            System.out.print("Min Goal: ");     extra.setGoalMin(goalMin = scan.nextDouble()); scan.nextLine();
-            System.out.print("Reward: ");       extra.setDescription(scan.nextLine());
+            System.out.print("Min Goal: ");
+            extra.setGoalMin(goalMin = scan.nextDouble()); scan.nextLine();
+            System.out.print("Reward: ");
+            extra.setDescription(scan.nextLine());
             if(extra.getGoalMin() != 0)
                 extras.add(extra);
         } while(goalMin != 0);
@@ -136,7 +148,7 @@ public class Actions {
         command.setAttachedObject(newProject);
 
         this.sendCommandToServer(command);
-        return this.receiveResponseFromServer();
+        return receiveResponseFromServer();
     }
 
     public ServerMessage pledge() throws IOException {
@@ -144,12 +156,15 @@ public class Actions {
         command = new Command();
 
         command.setCommand("pledge");
-        System.out.print("Project Name: "); command.addArgument(scan.nextLine());
-        System.out.print("Amount: ");       command.addArgument(scan.nextLine());
-        System.out.print("Decision: ");     command.addArgument(scan.nextLine());
+        System.out.print("Project Name: ");
+        command.addArgument(scan.nextLine());
+        System.out.print("Amount: ");
+        command.addArgument(scan.nextLine());
+        System.out.print("Decision: ");
+        command.addArgument(scan.nextLine());
 
         this.sendCommandToServer(command);
-        return this.receiveResponseFromServer();
+        return receiveResponseFromServer();
     }
 
     public ServerMessage projectDetails() throws IOException {
@@ -158,10 +173,11 @@ public class Actions {
         Project receiveProject;
 
         command.setCommand("details");
-        System.out.print("Choose project: ");   command.addArgument(scan.nextLine());
+        System.out.print("Choose project: ");
+        command.addArgument(scan.nextLine());
 
         this.sendCommandToServer(command);
-        return this.receiveResponseFromServer();
+        return receiveResponseFromServer();
     }
 
     public ServerMessage sendMessageToProject() throws IOException {
@@ -170,12 +186,14 @@ public class Actions {
         Message newMessage = new Message();
 
         command.setCommand("sendMessageToProject");
-        System.out.print("Project Name: "); newMessage.setSendTo(scan.nextLine());
-        System.out.println("Message: ");    newMessage.setText(scan.nextLine());
+        System.out.print("Project Name: ");
+        newMessage.setSendTo(scan.nextLine());
+        System.out.println("Message: ");
+        newMessage.setText(scan.nextLine());
 
         command.setAttachedObject(newMessage);
         this.sendCommandToServer(command);
-        return this.receiveResponseFromServer();
+        return receiveResponseFromServer();
     }
 
     public ServerMessage offerRewardToPerson() throws IOException {
@@ -183,12 +201,15 @@ public class Actions {
         command = new Command();
 
         command.setCommand("sendReward");
-        System.out.print("Project name: "); command.addArgument(scan.nextLine());
-        System.out.print("Reward: ");       command.addArgument(scan.nextLine());
-        System.out.print("Person name: ");  command.addArgument(scan.nextLine());
+        System.out.print("Project name: ");
+        command.addArgument(scan.nextLine());
+        System.out.print("Reward: ");
+        command.addArgument(scan.nextLine());
+        System.out.print("Person name: ");
+        command.addArgument(scan.nextLine());
 
-        this.sendCommandToServer(command);
-        return this.receiveResponseFromServer();
+        sendCommandToServer(command);
+        return receiveResponseFromServer();
     }
 
     // View
@@ -196,16 +217,16 @@ public class Actions {
         command = new Command();
 
         command.setCommand("viewMessages");
-        this.sendCommandToServer(command);
-        return this.receiveResponseFromServer();
+        sendCommandToServer(command);
+        return receiveResponseFromServer();
     }
 
     public ServerMessage viewBalance() throws IOException {
         command = new Command();
 
         command.setCommand("viewBalance");
-        this.sendCommandToServer(command);
-        return this.receiveResponseFromServer();
+        sendCommandToServer(command);
+        return receiveResponseFromServer();
     }
 
     public ServerMessage viewRewards() throws IOException {
@@ -220,8 +241,8 @@ public class Actions {
         command = new Command();
 
         command.setCommand("listInProgress");
-        this.sendCommandToServer(command);
-        return this.receiveResponseFromServer();
+        sendCommandToServer(command);
+        return receiveResponseFromServer();
     }
 
     public ServerMessage projectsExpired() throws IOException{
@@ -230,8 +251,8 @@ public class Actions {
         ServerMessage message = null;
 
         command.setCommand("listExpired");
-        this.sendCommandToServer(command);
-        return this.receiveResponseFromServer();
+        sendCommandToServer(command);
+        return receiveResponseFromServer();
     }
 
     public void listMessages(String projectName) throws IOException{
@@ -240,8 +261,8 @@ public class Actions {
 
         command.setCommand("messages");
         command.addArgument(projectName);
-        this.sendCommandToServer(command);
-        this.receiveResponseFromServer();
+        sendCommandToServer(command);
+        receiveResponseFromServer();
     }
 
     public ServerMessage sendMessageToOtherUser() throws IOException {
@@ -249,11 +270,13 @@ public class Actions {
         command = new Command();
 
         command.setCommand("sendMessage");
-        System.out.print("To: ");   command.addArgument(scan.nextLine());
-        System.out.print("Text: "); command.addArgument(scan.nextLine());
+        System.out.print("To: ");
+        command.addArgument(scan.nextLine());
+        System.out.print("Text: ");
+        command.addArgument(scan.nextLine());
 
         this.sendObjectToServer(command);
-        return this.receiveResponseFromServer();
+        return receiveResponseFromServer();
     }
 
     public ServerMessage cancelProject() throws IOException{
@@ -261,10 +284,11 @@ public class Actions {
         command = new Command();
 
         command.setCommand("cancelProject");
-        System.out.print("Project Name: "); command.addArgument(scan.nextLine());
+        System.out.print("Project Name: ");
+        command.addArgument(scan.nextLine());
 
         this.sendObjectToServer(command);
-        return this.receiveResponseFromServer();
+        return receiveResponseFromServer();
     }
 
     public ServerMessage addAdmin() throws IOException{
@@ -272,11 +296,13 @@ public class Actions {
         command = new Command();
 
         command.setCommand("addAdminToProject");
-        System.out.print("Project Name: ");         command.addArgument(scan.nextLine());
-        System.out.print("New Admin Username: ");   command.addArgument(scan.nextLine());
+        System.out.print("Project Name: ");
+        command.addArgument(scan.nextLine());
+        System.out.print("New Admin Username: ");
+        command.addArgument(scan.nextLine());
 
         this.sendObjectToServer(command);
-        return this.receiveResponseFromServer();
+        return receiveResponseFromServer();
     }
 
     public void logout() throws IOException{
@@ -284,7 +310,7 @@ public class Actions {
 
         command.setCommand("logout");
         this.sendObjectToServer(command);
-        this.receiveResponseFromServer();
+        receiveResponseFromServer();
     }
 
     public ServerMessage addRewardToProject() throws IOException{
@@ -293,13 +319,17 @@ public class Actions {
         Reward reward = new Reward();
 
         command.setCommand("addRewardToProject");
-        System.out.print("Project Name: ");     reward.setProjectName(scan.nextLine());
-        System.out.print("Pledge min: ");       reward.setPledgeMin(scan.nextDouble()); scan.nextLine();
-        System.out.print("Gift name: ");        reward.setGiftName(scan.nextLine());
+        System.out.print("Project Name: ");
+        reward.setProjectName(scan.nextLine());
+        System.out.print("Pledge min: ");
+        reward.setPledgeMin(scan.nextDouble());
+        scan.nextLine();
+        System.out.print("Gift name: ");
+        reward.setGiftName(scan.nextLine());
 
         command.setAttachedObject(reward);
-        this.sendCommandToServer(command);
-        return this.receiveResponseFromServer();
+        sendCommandToServer(command);
+        return receiveResponseFromServer();
     }
 
     public ServerMessage removeRewardFromProject() throws IOException{
@@ -308,13 +338,16 @@ public class Actions {
         Reward reward = new Reward();
 
         command.setCommand("removeRewardFromProject");
-        System.out.print("Project Name: ");     reward.setProjectName(scan.nextLine());
-        System.out.print("Pledge min: ");       reward.setPledgeMin(scan.nextDouble()); scan.nextLine();
-        System.out.print("Gift name: ");        reward.setGiftName(scan.nextLine());
+        System.out.print("Project Name: ");
+        reward.setProjectName(scan.nextLine());
+        System.out.print("Pledge min: ");
+        reward.setPledgeMin(scan.nextDouble()); scan.nextLine();
+        System.out.print("Gift name: ");
+        reward.setGiftName(scan.nextLine());
 
         command.setAttachedObject(reward);
-        this.sendCommandToServer(command);
-        return this.receiveResponseFromServer();
+        sendCommandToServer(command);
+        return receiveResponseFromServer();
     }
 
     public ServerMessage addExtraLevelToProject() throws IOException{
@@ -323,13 +356,17 @@ public class Actions {
         Extra extra = new Extra();
 
         command.setCommand("addExtraToProject");
-        System.out.print("Project Name: ");     extra.setProjectName(scan.nextLine());
-        System.out.print("Min Goal: ");         extra.setGoalMin(scan.nextDouble());    scan.nextLine();
-        System.out.print("Description: ");      extra.setDescription(scan.nextLine());
+        System.out.print("Project Name: ");
+        extra.setProjectName(scan.nextLine());
+        System.out.print("Min Goal: ");
+        extra.setGoalMin(scan.nextDouble());
+        scan.nextLine();
+        System.out.print("Description: ");
+        extra.setDescription(scan.nextLine());
 
         command.setAttachedObject(extra);
-        this.sendCommandToServer(command);
-        return this.receiveResponseFromServer();
+        sendCommandToServer(command);
+        return receiveResponseFromServer();
     }
 
     public ServerMessage removeExtraLevelToProject() throws IOException{
@@ -338,13 +375,17 @@ public class Actions {
         Extra extra = new Extra();
 
         command.setCommand("removeExtraFromProject");
-        System.out.print("Project Name: ");     extra.setProjectName(scan.nextLine());
-        System.out.print("Min Goal: ");         extra.setGoalMin(scan.nextDouble());    scan.nextLine();
-        System.out.print("Description: ");      extra.setDescription(scan.nextLine());
+        System.out.print("Project Name: ");
+        extra.setProjectName(scan.nextLine());
+        System.out.print("Min Goal: ");
+        extra.setGoalMin(scan.nextDouble());
+        scan.nextLine();
+        System.out.print("Description: ");
+        extra.setDescription(scan.nextLine());
 
         command.setAttachedObject(extra);
-        this.sendCommandToServer(command);
-        return this.receiveResponseFromServer();
+        sendCommandToServer(command);
+        return receiveResponseFromServer();
     }
 
 
