@@ -6,6 +6,7 @@ import fundstarter.ServerMessage;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.text.ParseException;
@@ -44,6 +45,16 @@ public class Connection {
             this.inputStream = new ObjectInputStream(socket.getInputStream());
         } catch(IOException e){
             System.out.println("Connection: " + e.getMessage());
+            try{
+                this.socket = new Socket(secondaryServerIP, serverPort);
+                this.outputStream = new ObjectOutputStream(socket.getOutputStream());
+                this.inputStream = new ObjectInputStream(socket.getInputStream());
+                this.secondaryServerIP = this.primaryServerIP;
+                this.primaryServerIP = socket.getInetAddress();
+            } catch(IOException e2){
+                System.out.println("Connection: " + e.getMessage());
+
+            }
         }
 
         startCLI();
@@ -56,8 +67,9 @@ public class Connection {
         menus.start();
     }
 
-    public Socket handleServerFailOver(Command commandInOutbox, String usernameLoggedIn) {
+    public ServerMessage handleServerFailOver(Command commandInOutbox, String usernameLoggedIn) {
         // o cliente tenta uma última vez ligar-se ao servidor primário
+        ServerMessage outputMessageToClient = null;
         System.out.println("Server is not available. Command in outbox: " + commandInOutbox.getCommand());
         try {
             System.out.println("Try to reestablish connection with primary server...");
@@ -66,7 +78,7 @@ public class Connection {
             inputStream = new ObjectInputStream(socket.getInputStream());
             if (!usernameLoggedIn.equals(""))
                 reLogin(usernameLoggedIn);
-            reSendCommand(commandInOutbox);
+            outputMessageToClient = reSendCommand(commandInOutbox);
         } catch (IOException e) {
             try {
                 System.out.println("Try to reestablish connection with backup server...");
@@ -74,9 +86,11 @@ public class Connection {
                 socket = new Socket(secondaryServerIP, serverPort);
                 outputStream = new ObjectOutputStream(socket.getOutputStream());
                 inputStream = new ObjectInputStream(socket.getInputStream());
+                secondaryServerIP = primaryServerIP;
+                primaryServerIP = socket.getInetAddress();
                 if (!usernameLoggedIn.equals(""))
                     reLogin(usernameLoggedIn);
-                reSendCommand(commandInOutbox);
+                outputMessageToClient = reSendCommand(commandInOutbox);
 
 
             } catch (IOException e2) {
@@ -86,7 +100,7 @@ public class Connection {
             }
         }
 
-        return socket;
+        return outputMessageToClient;
 
     }
 
@@ -104,14 +118,15 @@ public class Connection {
         }
     }
 
-    public void reSendCommand(Command commandInOutbox) throws IOException{
-
+    public ServerMessage reSendCommand(Command commandInOutbox) throws IOException{
+        ServerMessage output = null;
         outputStream.writeObject(commandInOutbox);
-        /*try {
-            System.out.println(inputStream.readObject().toString());
+        try {
+            output = (ServerMessage)inputStream.readObject();
         } catch (ClassNotFoundException e) {
-            System.out.println("Class Not Found: " + e.getMessage());;
-        }*/
+            System.out.println("Class Not Found: " + e.getMessage());
+        }
+        return output;
     }
 
     public ObjectInputStream getInputStream() {

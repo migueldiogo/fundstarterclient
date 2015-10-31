@@ -50,6 +50,15 @@ public class Command implements Serializable {
     public void addArgument(String arg){
         this.arguments.add(arg);
     }
+
+    @Override
+    public String toString() {
+        return "Command{" +
+                "command='" + command + '\'' +
+                ", arguments=" + arguments +
+                ", attachedObject=" + attachedObject +
+                '}';
+    }
 }
 
 

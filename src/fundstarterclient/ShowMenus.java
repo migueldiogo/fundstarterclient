@@ -46,21 +46,24 @@ public class ShowMenus {
         menu1.addOption("Quit");
         menu1.setAnswerPrompt("Please enter your choice: ");
 
-        System.out.println(menu1.toString());
 
-        int optionChosen = readOptionChosenByUser(menu1);
 
         do {
+            System.out.println(menu1.toString());
+
+            int optionChosen = readOptionChosenByUser(menu1);
+
             switch (optionChosen) {
                 case 1:
                     loggedPerson = action.login();
-                    mainMenuWithUserLoggedIn();
+                    voltar = mainMenuWithUserLoggedIn();
                     break;
                 case 2:
                     try{
                         action.signUp();
                     } catch (IOException e) {
                         connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    }
                     break;
                 case 3:
                     System.exit(0);

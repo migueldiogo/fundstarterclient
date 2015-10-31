@@ -24,7 +24,7 @@ public class Actions {
 
     public String login() {
         Scanner scan = new Scanner(System.in);
-        ServerMessage serverMessage;
+        ServerMessage serverMessage = null;
         String username = "";
         do {
             command = new Command();
@@ -39,7 +39,7 @@ public class Actions {
                 sendCommandToServer(command);
                 serverMessage = receiveResponseFromServer();
             } catch (IOException e) {
-                connection.handleServerFailOver(command, "");
+                serverMessage = connection.handleServerFailOver(command, "");
             } finally {
                 System.out.println(serverMessage.getContent().toString());
             }
@@ -54,7 +54,7 @@ public class Actions {
     public void signUp() throws IOException {
         Scanner scan = new Scanner(System.in);
 
-        ServerMessage serverMessage;
+        ServerMessage serverMessage = null;
         do {
             command = new Command();
 
@@ -63,14 +63,18 @@ public class Actions {
             command.addArgument(scan.nextLine());
             System.out.print("Password: ");
             command.addArgument(scan.nextLine());
-            System.out.print("Repeat Password: ");  command.addArgument(scan.nextLine());
+            System.out.print("Repeat Password: ");
+            command.addArgument(scan.nextLine());
 
             try {
                 sendCommandToServer(command);
+                serverMessage = receiveResponseFromServer();
+
             } catch (IOException e) {
-                connection.handleServerFailOver(command, "");
+                serverMessage = connection.handleServerFailOver(command, "");
+            } finally {
+                System.out.println(serverMessage.getContent().toString());
             }
-            serverMessage = receiveResponseFromServer();
 
 
         }
@@ -344,11 +348,12 @@ public class Actions {
     }
 
 
-    public void sendCommandToServer(Command command) throws IOException{
+    public void sendCommandToServer(Command command) throws IOException {
         connection.getOutputStream().writeObject(command);
     }
 
     public void sendObjectToServer(Object object) throws IOException {
+        assert object != null;
         connection.getOutputStream().writeObject(object);
     }
 
@@ -359,6 +364,9 @@ public class Actions {
         } catch (ClassNotFoundException e) {
             System.out.println("Class not Found: " + e.getMessage());
         }
+
+        assert message != null;
+
         return message;
     }
 
