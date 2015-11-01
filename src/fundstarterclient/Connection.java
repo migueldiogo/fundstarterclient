@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.text.ParseException;
 
@@ -38,13 +39,16 @@ public class Connection {
             this.primaryServerIP = primaryServerIP;
             this.secondaryServerIP = secondaryServerIP;
             this.serverPort = serverPort;
-            this.socket = new Socket(primaryServerIP, serverPort);
+            this.socket = new Socket();
+            socket.connect(new InetSocketAddress(primaryServerIP, serverPort), 3000);
             this.outputStream = new ObjectOutputStream(socket.getOutputStream());
             this.inputStream = new ObjectInputStream(socket.getInputStream());
         } catch(IOException e){
             System.out.println("Server " + primaryServerIP.getHostAddress() + " not available: " + e.getMessage());
             try{
-                this.socket = new Socket(secondaryServerIP, serverPort);
+                this.socket = new Socket();
+                socket.connect(new InetSocketAddress(secondaryServerIP, serverPort), 3000);
+
                 this.outputStream = new ObjectOutputStream(socket.getOutputStream());
                 this.inputStream = new ObjectInputStream(socket.getInputStream());
                 this.secondaryServerIP = this.primaryServerIP;

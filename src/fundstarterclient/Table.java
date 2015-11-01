@@ -48,7 +48,7 @@ public class Table {
             //data[i][3] = project.getDate();
             data[i][2] = project.getGoal() + "€";
             data[i][3] = project.getTotalAmountEarned() + "€";
-            data[i][4] = project.getPercentageOfProgress() + "%";
+            data[i][4] = (Math.round(project.getPercentageOfProgress() * 100.0)/100.0) + "%";
         }
 
         ASCIITable.getInstance().printTable(header, data);
@@ -72,24 +72,28 @@ public class Table {
         data[0][3] = project.getDate();
         data[0][4] = project.getGoal() + "€";
         data[0][5] = project.getTotalAmountEarned() + "€";
-        data[0][6] = project.getPercentageOfProgress() + "%";
+        data[0][6] = (Math.round(project.getPercentageOfProgress() * 100.0)/100.0) + "%";
 
         ASCIITable.getInstance().printTable(header, data);
 
     }
 
     public void printTableOfMessages(ArrayList<Message> listOfMessages) {
-        header = new String[3];
+        header = new String[4];
         header[0] = "Date";
         header[1] = "From";
         header[2] = "Message";
+        header[3] = "Project Associate";
 
-        data = new String[listOfMessages.size()][3];
+
+        data = new String[listOfMessages.size()][4];
         for (int i = 0; i < listOfMessages.size(); i++) {
             Message message = listOfMessages.get(i);
             data[i][0] = message.getData();
             data[i][1] = message.getSendFrom();
             data[i][2] = message.getText();
+            data[i][3] = message.getProjectAssociate();
+
         }
         ASCIITable.getInstance().printTable(header, data);
 
@@ -173,7 +177,7 @@ public class Table {
         int i = 0;
         for (Answer answer : question.getAnswers()) {
             data[i][0] = answer.getDescription();
-            data[i][1] = "" + answer.getVotes();
+            data[i][1] = "" + (int)answer.getVotes();
             i++;
         }
         ASCIITable.getInstance().printTable(header, data);

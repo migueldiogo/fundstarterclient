@@ -86,7 +86,6 @@ public class Action {
         Scanner scan = new Scanner(System.in);
         Project newProject = new Project();
         ArrayList<Reward> rewards = new ArrayList<>();
-        ArrayList<Answer> answers = new ArrayList<>();
         ArrayList<Extra> extras = new ArrayList<>();
         Question question = new Question();
         String projectName = "", input = "";
@@ -117,7 +116,6 @@ public class Action {
                 question.addAnswer(input, 0);
         } while(!input.equals(""));
 
-        question.setAnswers(answers);
         newProject.setQuestion(question);
         System.out.println("Rewards: ");
 
@@ -187,6 +185,24 @@ public class Action {
 
         command.setCommand("sendMessageToProject");
         System.out.print("Project Name: ");
+        newMessage.setProjectAssociate(scan.nextLine());
+        System.out.println("Message: ");
+        newMessage.setText(scan.nextLine());
+
+        command.setAttachedObject(newMessage);
+        this.sendCommandToServer(command);
+        return receiveResponseFromServer();
+    }
+
+    public ServerMessage sendMessageFromProject() throws IOException {
+        Scanner scan = new Scanner(System.in);
+        command = new Command();
+        Message newMessage = new Message();
+
+        command.setCommand("sendMessageFromProject");
+        System.out.print("Project Name: ");
+        newMessage.setProjectAssociate(scan.nextLine());
+        System.out.print("Send To: ");
         newMessage.setSendTo(scan.nextLine());
         System.out.println("Message: ");
         newMessage.setText(scan.nextLine());
@@ -217,6 +233,18 @@ public class Action {
         command = new Command();
 
         command.setCommand("viewMessages");
+        sendCommandToServer(command);
+        return receiveResponseFromServer();
+    }
+
+    public ServerMessage viewProjectMessages() throws  IOException{
+        Scanner scan = new Scanner(System.in);
+
+        command = new Command();
+
+        command.setCommand("viewProjectMessages");
+        System.out.print("Project: ");
+        command.addArgument(scan.nextLine());
         sendCommandToServer(command);
         return receiveResponseFromServer();
     }
@@ -263,28 +291,25 @@ public class Action {
         return receiveResponseFromServer();
     }
 
-    public void listMessages(String projectName) throws IOException{
-        Scanner scan = new Scanner(System.in);
-        command = new Command();
-
-        command.setCommand("messages");
-        command.addArgument(projectName);
-        sendCommandToServer(command);
-        receiveResponseFromServer();
-    }
 
     public ServerMessage sendMessageToOtherUser() throws IOException {
         Scanner scan = new Scanner(System.in);
         command = new Command();
 
+        Message newMessage = new Message();
+
+
         command.setCommand("sendMessage");
         System.out.print("To: ");
-        command.addArgument(scan.nextLine());
-        System.out.print("Text: ");
-        command.addArgument(scan.nextLine());
+        newMessage.setSendTo(scan.nextLine());
+        System.out.println("Message: ");
+        newMessage.setText(scan.nextLine());
+
+        command.setAttachedObject(newMessage);
 
         this.sendObjectToServer(command);
         return receiveResponseFromServer();
+
     }
 
     public ServerMessage cancelProject() throws IOException{

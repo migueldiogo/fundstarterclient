@@ -222,7 +222,7 @@ public class ShowMenus {
                         if(serverMessage.isErrorHappened())
                             System.out.println(serverMessage.getContent());
                         else{
-                            new Table().printTableOfPledges((ArrayList<Pledge>)serverMessage.getContent());
+                            new Table().printTableOfPledges((ArrayList<Pledge>) serverMessage.getContent());
 
                             /*
                             for(Reward reward : (ArrayList<Reward>) serverMessage.getContent()){
@@ -252,6 +252,8 @@ public class ShowMenus {
         menu3.addOption("New project");
         menu3.addOption("Pledge a project");
         menu3.addOption("Send Message to Project");
+        menu3.addOption("Send Message from Project");
+        menu3.addOption("View Project Messages");
         menu3.addOption("Project Details");
         menu3.addOption("Add reward to Project");
         menu3.addOption("Remove reward to Project");
@@ -332,32 +334,68 @@ public class ShowMenus {
                 case 6:
                     action = new Action(connection);
                     try {
+                        serverMessage = action.sendMessageFromProject();
+                    } catch (IOException e) {
+                        serverMessage = connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    }
+                    finally {
+                        System.out.println(serverMessage.getContent());
+                    }
+                    break;
+
+
+                case 7:
+                    action = new Action(connection);
+                    try {
+                        serverMessage = action.viewProjectMessages();
+                    } catch (IOException e) {
+                        serverMessage = connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    } finally {
+                        if(serverMessage.isErrorHappened())
+                            System.out.println(serverMessage.getContent());
+                        else{
+                            new Table().printTableOfMessages((ArrayList<Message>)serverMessage.getContent());
+
+                        }
+                    }
+                    break;
+
+                case 8:
+                    action = new Action(connection);
+                    try {
                         serverMessage = action.projectDetails();
                     } catch (IOException e) {
                         serverMessage = connection.handleServerFailOver(action.getCommand(), loggedPerson);
                     } finally {
-                        Table table = new Table();
-                        Project project = (Project)serverMessage.getContent();
-                        table.printProject(project);
 
-                        if (project.getQuestion() != null && project.getQuestion().getQuestion() != null && !project.getQuestion().getQuestion().equals("") &&
-                                project.getQuestion().getAnswers() != null && !project.getQuestion().getAnswers().isEmpty())
-                            table.printTableOfQuestion(project.getQuestion());
-                        else
-                            System.out.println("This project doesn't have any question.");
+                        if (!serverMessage.isErrorHappened()) {
+                            Table table = new Table();
+                            Project project = (Project) serverMessage.getContent();
 
-                        if (project.getRewards() != null && !project.getRewards().isEmpty())
-                            table.printTableOfRewards(project.getRewards());
+                            table.printProject(project);
+
+                            if (project.getQuestion() != null && project.getQuestion().getQuestion() != null && !project.getQuestion().getQuestion().equals("") &&
+                                    project.getQuestion().getAnswers() != null && !project.getQuestion().getAnswers().isEmpty())
+                                table.printTableOfQuestion(project.getQuestion());
+                            else
+                                System.out.println("This project doesn't have any question.");
+
+                            if (project.getRewards() != null && !project.getRewards().isEmpty())
+                                table.printTableOfRewards(project.getRewards());
+                            else
+                                System.out.println("This project doesn't have any reward to offer.");
+                            if (project.getExtras() != null && !project.getExtras().isEmpty())
+                                table.printTableOfExtras(project.getExtras());
+                            else
+                                System.out.println("This project doesn't have any extra.");
+                        }
                         else
-                            System.out.println("This project doesn't have any reward to offer.");
-                        if (project.getExtras() != null && !project.getExtras().isEmpty())
-                            table.printTableOfExtras(project.getExtras());
-                        else
-                            System.out.println("This project doesn't have any extra.");
+                            System.out.println("This project doesn't exist.");
+
                     }
                     break;
 
-                case 7:
+                case 9:
                     action = new Action(connection);
                     try {
                         serverMessage = action.addRewardToProject();
@@ -368,7 +406,7 @@ public class ShowMenus {
                     }
                     break;
 
-                case 8:
+                case 10:
                     action = new Action(connection);
                     try {
                         serverMessage = action.removeRewardFromProject();
@@ -378,7 +416,7 @@ public class ShowMenus {
                         System.out.println(serverMessage.getContent());
                     }
                     break;
-                case 9:
+                case 11:
                     action = new Action(connection);
                     try{
                         serverMessage = action.addExtraLevelToProject();
@@ -388,7 +426,7 @@ public class ShowMenus {
                         System.out.println(serverMessage.getContent());
                     }
                     break;
-                case 10:
+                case 12:
                     action = new Action(connection);
                     try {
                         serverMessage = action.removeExtraLevelToProject();
@@ -398,10 +436,10 @@ public class ShowMenus {
                         System.out.println(serverMessage.getContent());
                     }
                     break;
-                case 11:
+                case 13:
                     return false;
                 default:
-                    System.out.println("Choose an option between 1 and 11");     break;
+                    System.out.println("Choose an option between 1 and 13");     break;
             }
         }while(voltar);
 
