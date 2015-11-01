@@ -47,7 +47,7 @@ public class Action {
 
     }
 
-    public void signUp() throws IOException {
+    public void signUp() {
         Scanner scan = new Scanner(System.in);
 
         ServerMessage serverMessage = null;
@@ -86,7 +86,7 @@ public class Action {
         Scanner scan = new Scanner(System.in);
         Project newProject = new Project();
         ArrayList<Reward> rewards = new ArrayList<>();
-        ArrayList<String> answers = new ArrayList<>();
+        ArrayList<Answer> answers = new ArrayList<>();
         ArrayList<Extra> extras = new ArrayList<>();
         Question question = new Question();
         String projectName = "", input = "";
@@ -114,7 +114,7 @@ public class Action {
         do {
             input = scan.nextLine();
             if (!input.equals(""))
-                answers.add(input);
+                question.addAnswer(input, 0);
         } while(!input.equals(""));
 
         question.setAnswers(answers);
@@ -233,6 +233,14 @@ public class Action {
         command = new Command();
 
         command.setCommand("viewRewards");
+        sendCommandToServer(command);
+        return receiveResponseFromServer();
+    }
+
+    public ServerMessage viewPledges() throws IOException {
+        command = new Command();
+
+        command.setCommand("viewPledges");
         sendCommandToServer(command);
         return receiveResponseFromServer();
     }

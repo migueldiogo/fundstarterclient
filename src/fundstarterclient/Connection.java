@@ -42,7 +42,7 @@ public class Connection {
             this.outputStream = new ObjectOutputStream(socket.getOutputStream());
             this.inputStream = new ObjectInputStream(socket.getInputStream());
         } catch(IOException e){
-            System.out.println("Connection: " + e.getMessage());
+            System.out.println("Server " + primaryServerIP.getHostAddress() + " not available: " + e.getMessage());
             try{
                 this.socket = new Socket(secondaryServerIP, serverPort);
                 this.outputStream = new ObjectOutputStream(socket.getOutputStream());
@@ -50,8 +50,8 @@ public class Connection {
                 this.secondaryServerIP = this.primaryServerIP;
                 this.primaryServerIP = socket.getInetAddress();
             } catch(IOException e2){
-                System.out.println("Connection: " + e.getMessage());
-
+                System.out.println("Server " + secondaryServerIP.getHostAddress() + " not available: " + e.getMessage());
+                System.exit(1);
             }
         }
 

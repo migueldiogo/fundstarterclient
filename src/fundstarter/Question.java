@@ -9,18 +9,20 @@ import java.util.ArrayList;
 public class Question implements Serializable{
     private String projectName;
     private String Question;
-    private ArrayList<String> answers;
+    private ArrayList<Answer> answers = new ArrayList<>();
 
     private static final long serialVersionUID = 1L;
 
 
-    public Question(String projectName, String question, ArrayList<String> answers) {
+    public Question(String projectName, String question, ArrayList<Answer> answers) {
         this.projectName = projectName;
         Question = question;
         this.answers = answers;
     }
-    public Question(){}
 
+    public Question() {
+        answers = new ArrayList<Answer>();
+    }
 
     public String getProjectName() {
         return projectName;
@@ -30,11 +32,11 @@ public class Question implements Serializable{
         this.projectName = projectName;
     }
 
-    public ArrayList<String> getAnswers() {
+    public ArrayList<Answer> getAnswers() {
         return answers;
     }
 
-    public void setAnswers(ArrayList<String> answers) {
+    public void setAnswers(ArrayList<Answer> answers) {
         this.answers = answers;
     }
 
@@ -44,6 +46,10 @@ public class Question implements Serializable{
 
     public void setQuestion(String question) {
         Question = question;
+    }
+
+    public void addAnswer(String description, double shares) {
+        answers.add(new Answer(description, shares));
     }
 
     @Override
