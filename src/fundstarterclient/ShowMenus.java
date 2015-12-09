@@ -259,7 +259,7 @@ public class ShowMenus {
         menu3.addOption("Project Details");
         menu3.addOption("Add reward to Project");
         menu3.addOption("Remove reward to Project");
-        menu3.addOption("Add extra level");
+        menu3.addOption("Add Goal to Project");
         menu3.addOption("Remove extra level");
         menu3.addOption("Back");
         menu3.setAnswerPrompt("Please enter your choice: ");

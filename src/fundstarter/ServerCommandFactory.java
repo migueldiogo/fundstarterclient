@@ -34,75 +34,76 @@ public class ServerCommandFactory {
         return command;
     }
 
-    public static Command cancelProject(String projectId) {
+    public static Command cancelProject(int projectId) {
         Command command = new Command("cancelProject");
-        command.addArgument(projectId);
+        command.addArgument(Integer.toString(projectId));
         return command;
     }
 
-    public static Command addAdminToProject(String usernameToPromote, String projectId) {
+    public static Command addAdminToProject(String usernameToPromote, int projectId) {
         Command command = new Command("addAdminToProject");
         command.addArgument(usernameToPromote);
-        command.addArgument(projectId);
+        command.addArgument(Integer.toString(projectId));
         return command;
     }
 
-    public static Command addGoalToProject(Goal goal, String projectId) {
+    public static Command addGoalToProject(Goal goal, int projectId) {
         Command command = new Command("addGoalToProject");
         command.setAttachedObject(goal);
-        command.addArgument(projectId);
+        command.addArgument(Integer.toString(projectId));
         return command;
     }
 
-    public static Command addRewardToProject(Reward goal, String projectId) {
+    public static Command addRewardToProject(Reward goal, int projectId) {
         Command command = new Command("addRewardToProject");
         command.setAttachedObject(goal);
-        command.addArgument(projectId);
+        command.addArgument(Integer.toString(projectId));
         return command;
     }
 
-    public static Command addQuestionToProject(String question, String projectId) {
+    public static Command addQuestionToProject(String question, int projectId) {
         Command command = new Command("addQuestionToProject");
         command.addArgument(question);
-        command.addArgument(projectId);
+        command.addArgument(Integer.toString(projectId));
         return command;
     }
 
-    public static Command addOptionToProject(DecisionOption option, String projectId) {
+    public static Command addOptionToProject(DecisionOption option, int projectId) {
         Command command = new Command("addOptionToProject");
         command.setAttachedObject(option);
-        command.addArgument(projectId);
+        command.addArgument(Integer.toString(projectId));
         return command;
     }
 
-    public static Command removeGoalFromProject(Goal goal, String projectId) {
+    public static Command removeGoalFromProject(Goal goal, int projectId) {
         Command command = new Command("removeGoalFromProject");
         command.setAttachedObject(goal);
-        command.addArgument(projectId);
+        command.addArgument(Integer.toString(projectId));
         return command;
     }
 
-    public static Command removeRewardFromProject(String rewardId) {
+    public static Command removeRewardFromProject(int rewardId, int projectId) {
         Command command = new Command("removeRewardFromProject");
-        command.addArgument(rewardId);
+        command.addArgument(Integer.toString(rewardId));
+        command.addArgument(Integer.toString(projectId));
         return command;
     }
 
-    public static Command getProject(String projectId) {
+    public static Command getProject(int projectId) {
         Command command = new Command("getProject");
-        command.addArgument(projectId);
+        command.addArgument(Integer.toString(projectId));
         return command;
     }
 
-    public static Command getRewardsFromProject(String projectId) {
+    public static Command getRewardsFromProject(int projectId) {
         Command command = new Command("getRewardsFromProject");
-        command.addArgument(projectId);
+        command.addArgument(Integer.toString(projectId));
         return command;
     }
 
-    public static Command getGoalsFromProject(String projectId) {
+    public static Command getGoalsFromProject(int projectId) {
         Command command = new Command("getGoalsFromProject");
-        command.addArgument(projectId);
+        command.addArgument(Integer.toString(projectId));
         return command;
     }
 
@@ -116,9 +117,9 @@ public class ServerCommandFactory {
         return command;
     }
 
-    public static Command getProjectMessages(String projectId) {
+    public static Command getProjectMessages(int projectId) {
         Command command = new Command("getProjectMessages");
-        command.addArgument(projectId);
+        command.addArgument(Integer.toString(projectId));
         return command;
     }
 
@@ -149,10 +150,10 @@ public class ServerCommandFactory {
         return command;
     }
 
-    public static Command sendRewardToUser(String rewardId, String toUserId) {
+    public static Command sendRewardToUser(int rewardId, int toUserId) {
         Command command = new Command("sendRewardToUser");
-        command.addArgument(rewardId);
-        command.addArgument(toUserId);
+        command.addArgument(Integer.toString(rewardId));
+        command.addArgument(Integer.toString(toUserId));
         return command;
     }
 

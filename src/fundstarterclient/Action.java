@@ -160,35 +160,32 @@ public class Action {
 
     public ServerMessage cancelProject() throws IOException{
         Scanner scan = new Scanner(System.in);
-        String projectId;
+        int projectId;
         System.out.print("Project id: ");
-        projectId = scan.nextLine();
+        projectId = scan.nextInt(); scan.nextLine();
         this.sendObjectToServer(ServerCommandFactory.cancelProject(projectId));
         return receiveResponseFromServer();
     }
 
     public ServerMessage addAdminToProject() throws IOException{
         Scanner scan = new Scanner(System.in);
-        command = new Command();
 
-        command.setCommand("addAdminToProject");
         System.out.print("Project Id: ");
-        int projectId = scan.nextInt();
+        int projectId = scan.nextInt(); scan.nextLine();
         System.out.print("New Admin Username: ");
         String username = scan.nextLine();
 
-        this.sendObjectToServer(ServerCommandFactory.addAdminToProject(username, "" + projectId));
+        this.sendObjectToServer(ServerCommandFactory.addAdminToProject(username, projectId));
         return receiveResponseFromServer();
     }
 
     public ServerMessage addGoalToProject() throws IOException{
         Scanner scan = new Scanner(System.in);
-        String projectId;
+        int projectId;
         Goal goal = new Goal();
 
-        command.setCommand("addGoalToProject");
-        System.out.print("Project Name: ");
-        projectId = scan.nextLine();
+        System.out.print("Project Id: ");
+        projectId = scan.nextInt(); scan.nextLine();
         System.out.print("Min Goal: ");
         goal.setAmount(scan.nextDouble());
         scan.nextLine();
@@ -203,11 +200,10 @@ public class Action {
     public ServerMessage addRewardToProject() throws IOException{
         Scanner scan = new Scanner(System.in);
         Reward reward = new Reward();
-        String projectId;
+        int projectId;
 
-        command.setCommand("addRewardToProject");
         System.out.print("Project Name: ");
-        projectId = scan.nextLine();
+        projectId = scan.nextInt(); scan.nextLine();
         System.out.print("Pledge min: ");
         reward.setMinAmount(scan.nextDouble());
         scan.nextLine();
@@ -232,10 +228,10 @@ public class Action {
     public ServerMessage removeGoalFromProject() throws IOException{
         Scanner scan = new Scanner(System.in);
         Goal goal = new Goal();
-        String projectId;
+        int projectId;
 
         System.out.print("Project Name: ");
-        projectId = scan.nextLine();
+        projectId = scan.nextInt(); scan.nextLine();
         System.out.print("Min Goal: ");
         goal.setAmount(scan.nextDouble());
         scan.nextLine();
@@ -248,21 +244,23 @@ public class Action {
 
     public ServerMessage removeRewardFromProject() throws IOException{
         Scanner scan = new Scanner(System.in);
-        String rewardId;
+        int rewardId, projectId;
 
+        System.out.print("Project id: ");
+        projectId = scan.nextInt(); scan.nextLine();
         System.out.print("Reward id: ");
-        rewardId = scan.nextLine();
+        rewardId = scan.nextInt(); scan.nextLine();
 
-        sendCommandToServer(ServerCommandFactory.removeRewardFromProject(rewardId));
+        sendCommandToServer(ServerCommandFactory.removeRewardFromProject(rewardId, projectId));
         return receiveResponseFromServer();
     }
 
     public ServerMessage getProject() throws IOException {
         Scanner scan = new Scanner(System.in);
-        String projectId;
+        int projectId;
 
         System.out.print("Choose project id: ");
-        projectId = scan.nextLine();
+        projectId = scan.nextInt(); scan.nextLine();
 
         this.sendCommandToServer(ServerCommandFactory.getProject(projectId));
         return receiveResponseFromServer();
@@ -290,10 +288,10 @@ public class Action {
 
     public ServerMessage getProjectMessages() throws  IOException{
         Scanner scan = new Scanner(System.in);
-        String projectId;
+        int projectId;
 
         System.out.print("Project: ");
-        projectId = scan.nextLine();
+        projectId = scan.nextInt(); scan.nextLine();
         sendCommandToServer(ServerCommandFactory.getProjectMessages(projectId));
         return receiveResponseFromServer();
     }
@@ -342,13 +340,12 @@ public class Action {
 
     public ServerMessage sendRewardToUser() throws IOException {
         Scanner scan = new Scanner(System.in);
-        String rewardId, toUserId;
-
+        int rewardId, toUserId;
 
         System.out.print("Reward: ");
-        rewardId = scan.nextLine();
+        rewardId = scan.nextInt(); scan.nextLine();
         System.out.print("Person name: ");
-        toUserId = scan.nextLine();
+        toUserId = scan.nextInt(); scan.nextLine();
 
         sendCommandToServer(ServerCommandFactory.sendRewardToUser(rewardId, toUserId));
         return receiveResponseFromServer();
