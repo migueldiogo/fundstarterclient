@@ -25,6 +25,11 @@ public class Command implements Serializable {
         this.arguments = arguments;
     }
 
+    public Command(String command) {
+        this.command = command;
+        this.arguments = new ArrayList<>();
+    }
+
     public Command() {
         this.command = "";
         this.arguments = new ArrayList<>();

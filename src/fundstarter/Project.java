@@ -1,39 +1,48 @@
 package fundstarter;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by sergiopires on 26/10/15.
  */
 public class Project implements Serializable{
-    private String creator;
-    private String name;
-    private String description;
-    private String date;
-    private double goal;
-    private double totalAmountEarned;
-    private ArrayList<Reward> rewards;
-    private Question question;
-    private ArrayList<Extra> extras;
-
     private static final long serialVersionUID = 1L;
 
-    public Project() {}
+    private int projectId;
+    private String name;
+    private String description;
+    private Date expirationDate;
+    private double firstGoalValue;
+    private double totalAmountEarned;
+    private String question;
 
-    public Project(String creator, String name, String description, String date, double goal, ArrayList<Reward> rewards, Question question, ArrayList<Extra> extras) {
-        this.creator = creator;
-        this.name = name;
-        this.description = description;
-        this.date = date;
-        this.goal = goal;
-        this.rewards = rewards;
-        this.question = question;
-        this.extras = extras;
+    public Project() {
     }
 
-    public double getPercentageOfProgress(){
-        return (totalAmountEarned/goal)*100;
+    public Project(String name, String description, Date expirationDate, double firstGoalValue) {
+        this.name = name;
+        this.description = description;
+        this.expirationDate = expirationDate;
+        this.firstGoalValue = firstGoalValue;
+    }
+
+    public Project(int projectId, String name, String description, Date expirationDate, double firstGoalValue, double totalAmountEarned) {
+        this.projectId = projectId;
+        this.name = name;
+        this.description = description;
+        this.expirationDate = expirationDate;
+        this.firstGoalValue = firstGoalValue;
+        this.totalAmountEarned = totalAmountEarned;
+    }
+
+
+    public int getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(int projectId) {
+        this.projectId = projectId;
     }
 
     public String getName() {
@@ -52,44 +61,20 @@ public class Project implements Serializable{
         this.description = description;
     }
 
-    public String getDate() {
-        return date;
+    public Date getExpirationDate() {
+        return expirationDate;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setExpirationDate(Date expirationDate) {
+        this.expirationDate = expirationDate;
     }
 
-    public double getGoal() {
-        return goal;
+    public double getFirstGoalValue() {
+        return firstGoalValue;
     }
 
-    public void setGoal(double goal) {
-        this.goal = goal;
-    }
-
-    public ArrayList<Reward> getRewards() {
-        return rewards;
-    }
-
-    public void setRewards(ArrayList<Reward> rewards) {
-        this.rewards = rewards;
-    }
-
-    public Question getQuestion() {
-        return question;
-    }
-
-    public void setQuestion(Question question) {
-        this.question = question;
-    }
-
-    public String getCreator() {
-        return creator;
-    }
-
-    public void setCreator(String creator) {
-        this.creator = creator;
+    public void setFirstGoalValue(double firstGoalValue) {
+        this.firstGoalValue = firstGoalValue;
     }
 
     public double getTotalAmountEarned() {
@@ -100,27 +85,26 @@ public class Project implements Serializable{
         this.totalAmountEarned = totalAmountEarned;
     }
 
-    public ArrayList<Extra> getExtras() {
-        return extras;
+    public double getPercentageOfProgress(){
+        return (totalAmountEarned/ firstGoalValue)*100;
     }
 
-    public void setExtras(ArrayList<Extra> extras) {
-        this.extras = extras;
+    public String getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(String question) {
+        this.question = question;
     }
 
     @Override
     public String toString() {
         return "Project{" +
-                "creator='" + creator + '\'' +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", date='" + date + '\'' +
-                ", goal=" + goal +
+                ", expirationDate='" + expirationDate + '\'' +
+                ", firstGoalValue=" + firstGoalValue +
                 ", totalAmountEarned=" + totalAmountEarned +
-                ", rewards=" + rewards +
-                ", question=" + question +
-                ", extras=" + extras +
-                ", percentage=" + getPercentageOfProgress() +
                 '}';
     }
 }

@@ -70,11 +70,20 @@ public class Connection {
     }
 
     public ServerMessage handleServerFailOver(Command commandInOutbox, String usernameLoggedIn) {
+
+
+
         // o cliente tenta uma última vez ligar-se ao servidor primário
         ServerMessage outputMessageToClient = null;
         System.out.println("Server is not available. Command in outbox: " + commandInOutbox.getCommand());
         try {
-            System.out.println("Try to reestablish connection with primary server...");
+            System.out.println("Trying to reestablish connection with primary server...");
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
             socket = new Socket(socket.getInetAddress(), socket.getPort());
             outputStream = new ObjectOutputStream(socket.getOutputStream());
             inputStream = new ObjectInputStream(socket.getInputStream());
@@ -83,8 +92,12 @@ public class Connection {
             outputMessageToClient = reSendCommand(commandInOutbox);
         } catch (IOException e) {
             try {
-                System.out.println("Try to reestablish connection with backup server...");
-
+                System.out.println("Trying to reestablish connection with backup server...");
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
                 socket = new Socket(secondaryServerIP, serverPort);
                 outputStream = new ObjectOutputStream(socket.getOutputStream());
                 inputStream = new ObjectInputStream(socket.getInputStream());

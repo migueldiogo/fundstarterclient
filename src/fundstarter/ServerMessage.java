@@ -20,8 +20,6 @@ public class ServerMessage implements Serializable{
     }
 
 
-
-
     public Object getContent() {
         return content;
     }

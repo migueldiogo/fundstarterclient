@@ -1,45 +1,45 @@
 package fundstarter;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by sergiopires on 26/10/15.
  */
 public class Message implements Serializable{
-    private String sendTo;
-    private String sendFrom;
-    private String text;
-    private String data;
-    private String projectAssociate;
-
-
     private static final long serialVersionUID = 1L;
 
-
-    public Message(String sendTo, String sendFrom, String text, String data) {
-        this.sendTo = sendTo;
-        this.sendFrom = sendFrom;
-        this.text = text;
-        this.data = data;
-    }
+    private int messageId;
+    private Date date;
+    private String text;
+    private int projectId;
+    private int pledgerUserId;
 
     public Message() {
     }
 
-    public String getSendTo() {
-        return sendTo;
+    public Message(int messageId, Date date, String text, int projectId, int pledgerUserId) {
+        this.messageId = messageId;
+        this.date = date;
+        this.text = text;
+        this.projectId = projectId;
+        this.pledgerUserId = pledgerUserId;
     }
 
-    public void setSendTo(String sendTo) {
-        this.sendTo = sendTo;
+    public int getMessageId() {
+        return messageId;
     }
 
-    public String getSendFrom() {
-        return sendFrom;
+    public void setMessageId(int messageId) {
+        this.messageId = messageId;
     }
 
-    public void setSendFrom(String sendFrom) {
-        this.sendFrom = sendFrom;
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public String getText() {
@@ -50,30 +50,30 @@ public class Message implements Serializable{
         this.text = text;
     }
 
-    public String getData() {
-        return data;
+    public int getProjectId() {
+        return projectId;
     }
 
-    public void setData(String data) {
-        this.data = data;
+    public void setProjectId(int projectId) {
+        this.projectId = projectId;
     }
 
-    public String getProjectAssociate() {
-        return projectAssociate;
+    public int getPledgerUserId() {
+        return pledgerUserId;
     }
 
-    public void setProjectAssociate(String projectAssociate) {
-        this.projectAssociate = projectAssociate;
+    public void setPledgerUserId(int pledgerUserId) {
+        this.pledgerUserId = pledgerUserId;
     }
 
     @Override
     public String toString() {
         return "Message{" +
-                "data='" + data + '\'' +
-                ", sendTo='" + sendTo + '\'' +
-                ", sendFrom='" + sendFrom + '\'' +
+                "date=" + date +
+                ", messageId=" + messageId +
                 ", text='" + text + '\'' +
-                ", projectAssociate='" + projectAssociate + '\'' +
+                ", projectId=" + projectId +
+                ", pledgerUserId=" + pledgerUserId +
                 '}';
     }
 }

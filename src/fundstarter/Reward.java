@@ -6,20 +6,64 @@ import java.io.Serializable;
  * Created by sergiopires on 26/10/15.
  */
 public class Reward implements Serializable{
-    private String projectName;
-    private double pledgeMin;
-    private String giftName;
     private static final long serialVersionUID = 1L;
 
+    private int userId;
+    private double minAmount;
+    private String description;
+    private boolean done;
+    private int projectId;
+    private String projectName;
 
-
-    public Reward(String projectName, double pledgeMin, String giftName) {
-        this.projectName = projectName;
-        this.pledgeMin = pledgeMin;
-        this.giftName = giftName;
+    public Reward() {
     }
-    public Reward(){}
 
+    public Reward(int userId, double minAmount, String description) {
+        this.userId = userId;
+        this.minAmount = minAmount;
+        this.description = description;
+    }
+
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public double getMinAmount() {
+        return minAmount;
+    }
+
+    public void setMinAmount(double minAmount) {
+        this.minAmount = minAmount;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public boolean getDone() {
+        return done;
+    }
+
+    public void setDone(boolean done) {
+        this.done = done;
+    }
+
+    public int getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(int projectId) {
+        this.projectId = projectId;
+    }
 
     public String getProjectName() {
         return projectName;
@@ -29,28 +73,13 @@ public class Reward implements Serializable{
         this.projectName = projectName;
     }
 
-    public double getPledgeMin() {
-        return pledgeMin;
-    }
-
-    public void setPledgeMin(double pledgeMin) {
-        this.pledgeMin = pledgeMin;
-    }
-
-    public String getGiftName() {
-        return giftName;
-    }
-
-    public void setGiftName(String giftName) {
-        this.giftName = giftName;
-    }
-
     @Override
     public String toString() {
         return "Reward{" +
-                "projectName='" + projectName + '\'' +
-                ", pledgeMin=" + pledgeMin +
-                ", giftName='" + giftName + '\'' +
+                "description='" + description + '\'' +
+                ", userId=" + userId +
+                ", minAmount=" + minAmount +
+                ", done=" + done +
                 '}';
     }
 }

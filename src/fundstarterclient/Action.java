@@ -1,8 +1,10 @@
 package fundstarterclient;
 
+import com.sun.corba.se.spi.activation.Server;
 import fundstarter.*;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -24,7 +26,6 @@ public class Action {
         String username = "";
         do {
             command = new Command();
-
             command.setCommand("login");
             System.out.print("Username: ");
             command.addArgument(username = scan.nextLine());
@@ -71,17 +72,24 @@ public class Action {
             } finally {
                 System.out.println(serverMessage.getContent().toString());
             }
-
-
         }
         while(serverMessage.isErrorHappened());
 
     }
 
-    public ServerMessage newProject() throws IOException {
-        command = new Command();
-        command.setCommand("newProject");
+    public ServerMessage logout() throws IOException {
+        this.sendObjectToServer(ServerCommandFactory.logout());
+        return receiveResponseFromServer();
+    }
 
+    public ServerMessage getBalance() throws IOException {
+        sendCommandToServer(ServerCommandFactory.getBalance());
+        return receiveResponseFromServer();
+    }
+
+    // TODO
+    public ServerMessage newProject() throws IOException {
+/*
         Scanner scan = new Scanner(System.in);
         Project newProject = new Project();
         ArrayList<Reward> rewards = new ArrayList<>();
@@ -146,279 +154,225 @@ public class Action {
 
         this.sendCommandToServer(command);
         return receiveResponseFromServer();
-    }
-
-    public ServerMessage pledge() throws IOException {
-        Scanner scan = new Scanner(System.in);
-        command = new Command();
-
-        command.setCommand("pledge");
-        System.out.print("Project Name: ");
-        command.addArgument(scan.nextLine());
-        System.out.print("Amount: ");
-        command.addArgument(scan.nextLine());
-        System.out.print("Decision: ");
-        command.addArgument(scan.nextLine());
-
-        this.sendCommandToServer(command);
-        return receiveResponseFromServer();
-    }
-
-    public ServerMessage projectDetails() throws IOException {
-        Scanner scan = new Scanner(System.in);
-        command = new Command();
-        Project receiveProject;
-
-        command.setCommand("details");
-        System.out.print("Choose project: ");
-        command.addArgument(scan.nextLine());
-
-        this.sendCommandToServer(command);
-        return receiveResponseFromServer();
-    }
-
-    public ServerMessage sendMessageToProject() throws IOException {
-        Scanner scan = new Scanner(System.in);
-        command = new Command();
-        Message newMessage = new Message();
-
-        command.setCommand("sendMessageToProject");
-        System.out.print("Project Name: ");
-        newMessage.setProjectAssociate(scan.nextLine());
-        System.out.println("Message: ");
-        newMessage.setText(scan.nextLine());
-
-        command.setAttachedObject(newMessage);
-        this.sendCommandToServer(command);
-        return receiveResponseFromServer();
-    }
-
-    public ServerMessage sendMessageFromProject() throws IOException {
-        Scanner scan = new Scanner(System.in);
-        command = new Command();
-        Message newMessage = new Message();
-
-        command.setCommand("sendMessageFromProject");
-        System.out.print("Project Name: ");
-        newMessage.setProjectAssociate(scan.nextLine());
-        System.out.print("Send To: ");
-        newMessage.setSendTo(scan.nextLine());
-        System.out.println("Message: ");
-        newMessage.setText(scan.nextLine());
-
-        command.setAttachedObject(newMessage);
-        this.sendCommandToServer(command);
-        return receiveResponseFromServer();
-    }
-
-    public ServerMessage offerRewardToPerson() throws IOException {
-        Scanner scan = new Scanner(System.in);
-        command = new Command();
-
-        command.setCommand("sendReward");
-        System.out.print("Project name: ");
-        command.addArgument(scan.nextLine());
-        System.out.print("Reward: ");
-        command.addArgument(scan.nextLine());
-        System.out.print("Person name: ");
-        command.addArgument(scan.nextLine());
-
-        sendCommandToServer(command);
-        return receiveResponseFromServer();
-    }
-
-    // View
-    public ServerMessage viewMessages() throws  IOException{
-        command = new Command();
-
-        command.setCommand("viewMessages");
-        sendCommandToServer(command);
-        return receiveResponseFromServer();
-    }
-
-    public ServerMessage viewProjectMessages() throws  IOException{
-        Scanner scan = new Scanner(System.in);
-
-        command = new Command();
-
-        command.setCommand("viewProjectMessages");
-        System.out.print("Project: ");
-        command.addArgument(scan.nextLine());
-        sendCommandToServer(command);
-        return receiveResponseFromServer();
-    }
-
-    public ServerMessage getBalance() throws IOException {
-        command = new Command();
-
-        command.setCommand("getBalance");
-        sendCommandToServer(command);
-        return receiveResponseFromServer();
-    }
-
-    public ServerMessage viewRewards() throws IOException {
-        command = new Command();
-
-        command.setCommand("viewRewards");
-        sendCommandToServer(command);
-        return receiveResponseFromServer();
-    }
-
-    public ServerMessage viewPledges() throws IOException {
-        command = new Command();
-
-        command.setCommand("viewPledges");
-        sendCommandToServer(command);
-        return receiveResponseFromServer();
-    }
-
-    public ServerMessage projectsInProgress() throws IOException{
-        command = new Command();
-
-        command.setCommand("listInProgress");
-        sendCommandToServer(command);
-        return receiveResponseFromServer();
-    }
-
-    public ServerMessage projectsExpired() throws IOException{
-        command = new Command();
-        ArrayList<Project> projectsExpired;
-        ServerMessage message = null;
-
-        command.setCommand("listExpired");
-        sendCommandToServer(command);
-        return receiveResponseFromServer();
-    }
-
-
-    public ServerMessage sendMessageToOtherUser() throws IOException {
-        Scanner scan = new Scanner(System.in);
-        command = new Command();
-
-        Message newMessage = new Message();
-
-
-        command.setCommand("sendMessage");
-        System.out.print("To: ");
-        newMessage.setSendTo(scan.nextLine());
-        System.out.println("Message: ");
-        newMessage.setText(scan.nextLine());
-
-        command.setAttachedObject(newMessage);
-
-        this.sendObjectToServer(command);
-        return receiveResponseFromServer();
-
+        */
+        return new ServerMessage();
     }
 
     public ServerMessage cancelProject() throws IOException{
         Scanner scan = new Scanner(System.in);
-        command = new Command();
-
-        command.setCommand("cancelProject");
-        System.out.print("Project Name: ");
-        command.addArgument(scan.nextLine());
-
-        this.sendObjectToServer(command);
+        String projectId;
+        System.out.print("Project id: ");
+        projectId = scan.nextLine();
+        this.sendObjectToServer(ServerCommandFactory.cancelProject(projectId));
         return receiveResponseFromServer();
     }
 
-    public ServerMessage addAdmin() throws IOException{
+    public ServerMessage addAdminToProject() throws IOException{
         Scanner scan = new Scanner(System.in);
         command = new Command();
 
         command.setCommand("addAdminToProject");
-        System.out.print("Project Name: ");
-        command.addArgument(scan.nextLine());
+        System.out.print("Project Id: ");
+        String projectId = scan.nextLine();
         System.out.print("New Admin Username: ");
-        command.addArgument(scan.nextLine());
+        String username = scan.nextLine();
 
         this.sendObjectToServer(command);
         return receiveResponseFromServer();
     }
 
-    public void logout() throws IOException{
-        command = new Command();
+    public ServerMessage addGoalToProject() throws IOException{
+        Scanner scan = new Scanner(System.in);
+        String projectId;
+        Goal goal = new Goal();
 
-        command.setCommand("logout");
-        this.sendObjectToServer(command);
-        receiveResponseFromServer();
+        command.setCommand("addGoalToProject");
+        System.out.print("Project Name: ");
+        projectId = scan.nextLine();
+        System.out.print("Min Goal: ");
+        goal.setAmount(scan.nextDouble());
+        scan.nextLine();
+        System.out.print("Description: ");
+        goal.setExtraDescription(scan.nextLine());
+
+        sendCommandToServer(ServerCommandFactory.addGoalToProject(goal, projectId));
+        return receiveResponseFromServer();
     }
+
 
     public ServerMessage addRewardToProject() throws IOException{
         Scanner scan = new Scanner(System.in);
-        command = new Command();
         Reward reward = new Reward();
+        String projectId;
 
         command.setCommand("addRewardToProject");
         System.out.print("Project Name: ");
-        reward.setProjectName(scan.nextLine());
+        projectId = scan.nextLine();
         System.out.print("Pledge min: ");
-        reward.setPledgeMin(scan.nextDouble());
+        reward.setMinAmount(scan.nextDouble());
         scan.nextLine();
         System.out.print("Gift name: ");
-        reward.setGiftName(scan.nextLine());
+        reward.setDescription(scan.nextLine());
 
-        command.setAttachedObject(reward);
-        sendCommandToServer(command);
+        sendCommandToServer(ServerCommandFactory.addRewardToProject(reward, projectId));
+        return receiveResponseFromServer();
+
+    }
+
+    // TODO
+    public ServerMessage addQuestionToProject() throws IOException {
+            return new ServerMessage();
+    }
+
+    // TODO
+    public ServerMessage addOptionToServer() throws IOException{
+        return new ServerMessage();
+    }
+
+    public ServerMessage removeGoalFromProject() throws IOException{
+        Scanner scan = new Scanner(System.in);
+        Goal goal = new Goal();
+        String projectId;
+
+        System.out.print("Project Name: ");
+        projectId = scan.nextLine();
+        System.out.print("Min Goal: ");
+        goal.setAmount(scan.nextDouble());
+        scan.nextLine();
+        System.out.print("Description: ");
+        goal.setExtraDescription(scan.nextLine());
+
+        sendCommandToServer(ServerCommandFactory.removeGoalFromProject(goal, projectId));
         return receiveResponseFromServer();
     }
 
     public ServerMessage removeRewardFromProject() throws IOException{
         Scanner scan = new Scanner(System.in);
-        command = new Command();
-        Reward reward = new Reward();
+        String rewardId;
 
-        command.setCommand("removeRewardFromProject");
-        System.out.print("Project Name: ");
-        reward.setProjectName(scan.nextLine());
-        System.out.print("Pledge min: ");
-        reward.setPledgeMin(scan.nextDouble()); scan.nextLine();
-        System.out.print("Gift name: ");
-        reward.setGiftName(scan.nextLine());
+        System.out.print("Reward id: ");
+        rewardId = scan.nextLine();
 
-        command.setAttachedObject(reward);
-        sendCommandToServer(command);
+        sendCommandToServer(ServerCommandFactory.removeRewardFromProject(rewardId));
         return receiveResponseFromServer();
     }
 
-    public ServerMessage addExtraLevelToProject() throws IOException{
+    public ServerMessage getProject() throws IOException {
         Scanner scan = new Scanner(System.in);
-        command = new Command();
-        Extra extra = new Extra();
+        String projectId;
 
-        command.setCommand("addExtraToProject");
-        System.out.print("Project Name: ");
-        extra.setProjectName(scan.nextLine());
-        System.out.print("Min Goal: ");
-        extra.setGoalMin(scan.nextDouble());
-        scan.nextLine();
-        System.out.print("Description: ");
-        extra.setDescription(scan.nextLine());
+        System.out.print("Choose project id: ");
+        projectId = scan.nextLine();
 
-        command.setAttachedObject(extra);
-        sendCommandToServer(command);
+        this.sendCommandToServer(ServerCommandFactory.getProject(projectId));
         return receiveResponseFromServer();
     }
 
-    public ServerMessage removeExtraLevelToProject() throws IOException{
+    // TODO
+    public ServerMessage getRewardsFromProject() throws IOException {
+        return new ServerMessage();
+    }
+
+    // TODO
+    public ServerMessage getGoalsFromProject() throws IOException {
+        return new ServerMessage();
+    }
+
+    public ServerMessage getPledgesFromUser() throws IOException {
+        sendCommandToServer(ServerCommandFactory.getPledgesFromUser());
+        return receiveResponseFromServer();
+    }
+
+    public ServerMessage getRewardsFromUser() throws IOException {
+        sendCommandToServer(ServerCommandFactory.getRewardsFromUser());
+        return receiveResponseFromServer();
+    }
+
+    public ServerMessage getProjectMessages() throws  IOException{
         Scanner scan = new Scanner(System.in);
-        command = new Command();
-        Extra extra = new Extra();
+        String projectId;
 
-        command.setCommand("removeExtraFromProject");
-        System.out.print("Project Name: ");
-        extra.setProjectName(scan.nextLine());
-        System.out.print("Min Goal: ");
-        extra.setGoalMin(scan.nextDouble());
-        scan.nextLine();
-        System.out.print("Description: ");
-        extra.setDescription(scan.nextLine());
-
-        command.setAttachedObject(extra);
-        sendCommandToServer(command);
+        System.out.print("Project: ");
+        projectId = scan.nextLine();
+        sendCommandToServer(ServerCommandFactory.getProjectMessages(projectId));
         return receiveResponseFromServer();
     }
+
+    public ServerMessage getUserMessages() throws  IOException{
+        sendCommandToServer(ServerCommandFactory.getUserMessages());
+        return receiveResponseFromServer();
+    }
+
+    public ServerMessage getExpiredProjects() throws IOException{
+        sendCommandToServer(ServerCommandFactory.getExpiredProjects());
+        return receiveResponseFromServer();
+    }
+
+    public ServerMessage getInProgressProjects() throws IOException{
+        sendCommandToServer(ServerCommandFactory.getInProgressProjects());
+        return receiveResponseFromServer();
+    }
+
+    public ServerMessage sendMessageFromProject() throws IOException {
+        Scanner scan = new Scanner(System.in);
+        Message message = new Message();
+
+        System.out.print("Project Id: ");
+        message.setProjectId(scan.nextInt());
+        System.out.println("Message: ");
+        message.setText(scan.nextLine());
+
+        this.sendCommandToServer(ServerCommandFactory.sendMessageFromProject(message));
+        return receiveResponseFromServer();
+    }
+
+    // TODO responder a mensagens precisaria só de mensagem id
+    public ServerMessage sendMessageToProject() throws IOException {
+        Scanner scan = new Scanner(System.in);
+        Message message = new Message();
+
+        System.out.print("Project Id: ");
+        message.setProjectId(scan.nextInt());
+        System.out.println("Message: ");
+        message.setText(scan.nextLine());
+
+        this.sendCommandToServer(ServerCommandFactory.sendMessageFromProject(message));
+        return receiveResponseFromServer();
+    }
+
+    public ServerMessage sendRewardToUser() throws IOException {
+        Scanner scan = new Scanner(System.in);
+        String rewardId, toUserId;
+
+
+        System.out.print("Reward: ");
+        rewardId = scan.nextLine();
+        System.out.print("Person name: ");
+        toUserId = scan.nextLine();
+
+        sendCommandToServer(ServerCommandFactory.sendRewardToUser(rewardId, toUserId));
+        return receiveResponseFromServer();
+    }
+
+    public ServerMessage pledge() throws IOException {
+        Scanner scan = new Scanner(System.in);
+        Pledge pledge = new Pledge();
+        System.out.print("Project Name: ");
+        pledge.setProjectId(scan.nextInt());
+        System.out.print("Amount: ");
+        pledge.setAmount(scan.nextDouble());
+        System.out.print("Decision: ");
+        pledge.setDecision(scan.nextInt());
+
+        this.sendCommandToServer(ServerCommandFactory.pledge(pledge));
+        return receiveResponseFromServer();
+    }
+
+    @Deprecated
+    public ServerMessage sendMessageToOtherUser() throws IOException {
+        return new ServerMessage();
+    }
+
 
 
     public void sendCommandToServer(Command command) throws IOException {
