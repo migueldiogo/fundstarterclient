@@ -379,7 +379,7 @@ public class ShowMenus {
 
                             if (project.getQuestion() != null && project.getQuestion().getQuestion() != null && !project.getQuestion().getQuestion().equals("") &&
                                     project.getQuestion().getAnswers() != null && !project.getQuestion().getAnswers().isEmpty())
-                                table.printTableOfQuestion(project.getQuestion());
+                                table.printTableOfOptions(project.getQuestion());
                             else
                                 System.out.println("This project doesn't have any question.");
 
@@ -388,7 +388,7 @@ public class ShowMenus {
                             else
                                 System.out.println("This project doesn't have any reward to offer.");
                             if (project.getExtras() != null && !project.getExtras().isEmpty())
-                                table.printTableOfExtras(project.getExtras());
+                                table.printTableOfGoals(project.getExtras());
                             else
                                 System.out.println("This project doesn't have any extra.");
                                 */

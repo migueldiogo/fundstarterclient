@@ -31,9 +31,6 @@ public class Table {
         header = new String[5];
         header[0] = "Expiration Date";
         header[1] = "Project Name";
-        //header[1] = "Creator";
-        //header[2] = "Description";
-        //header[3] = "Expiration Date";
         header[2] = "Goal";
         header[3] = "Amount Earned";
         header[4] = "Progress";
@@ -43,9 +40,6 @@ public class Table {
             Project project = listOfProjects.get(i);
             data[i][0] = project.getExpirationDate().toString();
             data[i][1] = project.getName();
-            //data[i][1] = project.getCreator();
-            //data[i][2] = project.getDescription();
-            //data[i][3] = project.getDate();
             data[i][2] = project.getFirstGoalValue() + "€";
             data[i][3] = project.getTotalAmountEarned() + "€";
             data[i][4] = (Math.round(project.getPercentageOfProgress() * 100.0)/100.0) + "%";
@@ -56,26 +50,23 @@ public class Table {
     }
 
     public void printProject(Project project) {
-        header = new String[7];
+        header = new String[6];
         header[0] = "Project Name";
-        header[1] = "Creator";
-        header[2] = "Description";
-        header[3] = "Expiration Date";
-        header[4] = "Goal";
-        header[5] = "Amount Earned";
-        header[6] = "Progress";
+        header[1] = "Description";
+        header[2] = "Expiration Date";
+        header[3] = "Goal";
+        header[4] = "Amount Earned";
+        header[5] = "Progress";
 
         data = new String[1][7];
         data[0][0] = project.getName();
-        data[0][1] = project.getName();
-        data[0][2] = project.getDescription();
-        data[0][3] = project.getExpirationDate().toString();
-        data[0][4] = project.getFirstGoalValue() + "€";
-        data[0][5] = project.getTotalAmountEarned() + "€";
-        data[0][6] = (Math.round(project.getPercentageOfProgress() * 100.0)/100.0) + "%";
+        data[0][1] = project.getDescription();
+        data[0][2] = project.getExpirationDate().toString();
+        data[0][3] = project.getFirstGoalValue() + "€";
+        data[0][4] = project.getTotalAmountEarned() + "€";
+        data[0][5] = (Math.round(project.getPercentageOfProgress() * 100.0)/100.0) + "%";
 
         ASCIITable.getInstance().printTable(header, data);
-
     }
 
     public void printTableOfMessages(ArrayList<Message> listOfMessages) {
@@ -150,7 +141,7 @@ public class Table {
 
     }
 
-    public void printTableOfExtras(ArrayList<Goal> goals) {
+    public void printTableOfGoals(ArrayList<Goal> goals) {
         header = new String[2];
         header[0] = "Minimum Goal";
         header[1] = "Goal";
@@ -165,24 +156,24 @@ public class Table {
 
     }
 
-    public void printTableOfQuestion(String question) {
-        /*
-        System.out.println("Question: " + question.getQuestion());
+    public void printTableOfOptions(String question, ArrayList<DecisionOption>options) {
+
+        System.out.println("Question: " + question);
         header = new String[2];
         header[0] = "Answer";
         header[1] = "Votes";
 
 
-        data = new String[question.getAnswers().size()][2];
+        data = new String[options.size()][2];
 
         int i = 0;
-        for (Answer answer : question.getAnswers()) {
-            data[i][0] = answer.getDescription();
-            data[i][1] = "" + (int)answer.getVotes();
+        for (DecisionOption option : options) {
+            data[i][0] = option.getDescription();
+            data[i][1] = "" + (int)option.getVotes();
             i++;
         }
         ASCIITable.getInstance().printTable(header, data);
-*/
+
     }
 
 

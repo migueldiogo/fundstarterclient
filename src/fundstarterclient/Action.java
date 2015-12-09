@@ -6,6 +6,7 @@ import fundstarter.*;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Scanner;
 
 /**
@@ -89,73 +90,34 @@ public class Action {
 
     // TODO
     public ServerMessage newProject() throws IOException {
-/*
+
         Scanner scan = new Scanner(System.in);
-        Project newProject = new Project();
-        ArrayList<Reward> rewards = new ArrayList<>();
-        ArrayList<Extra> extras = new ArrayList<>();
-        Question question = new Question();
-        String projectName = "", input = "";
-        double pledgeMin, goalMin;
+        Project project = new Project();
 
         System.out.print("Project Name: ");
-        newProject.setName(projectName = scan.nextLine());
+        project.setName(scan.nextLine());
 
         System.out.print("Description: ");
-        newProject.setDescription(scan.nextLine());
+        project.setDescription(scan.nextLine());
 
-        System.out.print("Limit date (YYYYMMDD): ");
-        newProject.setDate(scan.nextLine());
+        System.out.print("Limit date (YYYY-MM-DD): ");
+        String rawDate = scan.nextLine();
+        String[] parts = rawDate.split("-");
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, Integer.parseInt(parts[0]));
+        calendar.set(Calendar.MONTH, Integer.parseInt(parts[1]));
+        calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(parts[2]));
+        project.setExpirationDate(calendar.getTime());
 
-        System.out.print("Goal: ");
-        newProject.setGoal(scan.nextDouble());
+        System.out.print("First Goal Value: ");
+        project.setFirstGoalValue(scan.nextDouble());
         scan.nextLine();
 
         System.out.print("Question: ");
-        question.setQuestion(scan.nextLine());
-        question.setProjectName(projectName);
+        project.setQuestion(scan.nextLine());
 
-        System.out.print("Answers: ");
-
-        do {
-            input = scan.nextLine();
-            if (!input.equals(""))
-                question.addAnswer(input, 0);
-        } while(!input.equals(""));
-
-        newProject.setQuestion(question);
-        System.out.println("Rewards: ");
-
-        do {
-            Reward reward = new Reward();
-            reward.setProjectName(projectName);
-            System.out.print("Min pledge: ");
-            reward.setPledgeMin(pledgeMin = scan.nextDouble());
-            scan.nextLine();
-            System.out.print("Reward: ");
-            reward.setGiftName(scan.nextLine());
-            if(reward.getPledgeMin() != 0)
-                rewards.add(reward);
-        } while(pledgeMin != 0);
-        newProject.setRewards(rewards);
-        System.out.println("Extra Rewards: ");
-        do {
-            Extra extra = new Extra();
-            extra.setProjectName(projectName);
-            System.out.print("Min Goal: ");
-            extra.setGoalMin(goalMin = scan.nextDouble()); scan.nextLine();
-            System.out.print("Reward: ");
-            extra.setDescription(scan.nextLine());
-            if(extra.getGoalMin() != 0)
-                extras.add(extra);
-        } while(goalMin != 0);
-        newProject.setExtras(extras);
-        command.setAttachedObject(newProject);
-
-        this.sendCommandToServer(command);
+        this.sendCommandToServer(ServerCommandFactory.newProject(project));
         return receiveResponseFromServer();
-        */
-        return new ServerMessage();
     }
 
     public ServerMessage cancelProject() throws IOException{
@@ -215,14 +177,32 @@ public class Action {
 
     }
 
-    // TODO
     public ServerMessage addQuestionToProject() throws IOException {
-            return new ServerMessage();
+        Scanner scan = new Scanner(System.in);
+        int projectId;
+        String question;
+
+        System.out.print("Project Id: ");
+        projectId = scan.nextInt(); scan.nextLine();
+        System.out.print("Question: ");
+        question = scan.nextLine();
+
+        sendCommandToServer(ServerCommandFactory.addQuestionToProject(question, projectId));
+        return receiveResponseFromServer();
     }
 
-    // TODO
     public ServerMessage addOptionToServer() throws IOException{
-        return new ServerMessage();
+        Scanner scan = new Scanner(System.in);
+        int projectId;
+        String option;
+
+        System.out.print("Project Id: ");
+        projectId = scan.nextInt(); scan.nextLine();
+        System.out.print("Option: ");
+        option = scan.nextLine();
+
+        sendCommandToServer(ServerCommandFactory.addOptionToProject(new DecisionOption(projectId, option), projectId));
+        return receiveResponseFromServer();
     }
 
     public ServerMessage removeGoalFromProject() throws IOException{
@@ -266,14 +246,26 @@ public class Action {
         return receiveResponseFromServer();
     }
 
-    // TODO
     public ServerMessage getRewardsFromProject() throws IOException {
-        return new ServerMessage();
+        Scanner scan = new Scanner(System.in);
+        int projectId;
+
+        System.out.print("Choose project id: ");
+        projectId = scan.nextInt(); scan.nextLine();
+
+        this.sendCommandToServer(ServerCommandFactory.getRewardsFromProject(projectId));
+        return receiveResponseFromServer();
     }
 
-    // TODO
     public ServerMessage getGoalsFromProject() throws IOException {
-        return new ServerMessage();
+        Scanner scan = new Scanner(System.in);
+        int projectId;
+
+        System.out.print("Choose project id: ");
+        projectId = scan.nextInt(); scan.nextLine();
+
+        this.sendCommandToServer(ServerCommandFactory.getGoalsFromProject(projectId));
+        return receiveResponseFromServer();
     }
 
     public ServerMessage getPledgesFromUser() throws IOException {
@@ -369,7 +361,6 @@ public class Action {
     public ServerMessage sendMessageToOtherUser() throws IOException {
         return new ServerMessage();
     }
-
 
 
     public void sendCommandToServer(Command command) throws IOException {
