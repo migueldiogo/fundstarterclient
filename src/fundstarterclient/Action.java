@@ -106,7 +106,7 @@ public class Action {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, Integer.parseInt(parts[0]));
         calendar.set(Calendar.MONTH, Integer.parseInt(parts[1]));
-        calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(parts[2]));
+        calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(parts[2])-1);
         project.setExpirationDate(calendar.getTime());
 
         System.out.print("First Goal Value: ");
@@ -191,7 +191,7 @@ public class Action {
         return receiveResponseFromServer();
     }
 
-    public ServerMessage addOptionToServer() throws IOException{
+    public ServerMessage addOptionToProject() throws IOException{
         Scanner scan = new Scanner(System.in);
         int projectId;
         String option;
@@ -210,7 +210,7 @@ public class Action {
         Goal goal = new Goal();
         int projectId;
 
-        System.out.print("Project Name: ");
+        System.out.print("Project Id: ");
         projectId = scan.nextInt(); scan.nextLine();
         System.out.print("Min Goal: ");
         goal.setAmount(scan.nextDouble());
@@ -302,6 +302,17 @@ public class Action {
         sendCommandToServer(ServerCommandFactory.getInProgressProjects());
         return receiveResponseFromServer();
     }
+
+    public ServerMessage getProjectOptions() throws IOException{
+        Scanner scan = new Scanner(System.in);
+        System.out.print("Project Id: ");
+        int projectId = scan.nextInt(); scan.nextLine();
+
+        sendCommandToServer(ServerCommandFactory.getProjectOptions(projectId));
+        return receiveResponseFromServer();
+    }
+
+
 
     public ServerMessage sendMessageFromProject() throws IOException {
         Scanner scan = new Scanner(System.in);

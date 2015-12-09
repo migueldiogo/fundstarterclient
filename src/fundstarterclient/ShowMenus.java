@@ -261,6 +261,10 @@ public class ShowMenus {
         menu3.addOption("Remove reward to Project");
         menu3.addOption("Add Goal to Project");
         menu3.addOption("Remove extra level");
+        menu3.addOption("Add Question to Project");
+        menu3.addOption("Add Option to Project");
+        menu3.addOption("Remove goal from Project");
+        menu3.addOption("Show Project Options");
         menu3.addOption("Back");
         menu3.setAnswerPrompt("Please enter your choice: ");
 
@@ -442,6 +446,46 @@ public class ShowMenus {
                     }
                     break;
                 case 13:
+                    action = new Action(connection);
+                    try {
+                        serverMessage = action.addQuestionToProject();
+                    } catch (IOException e) {
+                        serverMessage = connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    } finally {
+                        System.out.println(serverMessage.getContent());
+                    }
+                    break;
+                case 14:
+                    action = new Action(connection);
+                    try {
+                        serverMessage = action.addOptionToProject();
+                    } catch (IOException e) {
+                        serverMessage = connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    } finally {
+                        System.out.println(serverMessage.getContent());
+                    }
+                    break;
+                case 15:
+                    action = new Action(connection);
+                    try {
+                        serverMessage = action.removeGoalFromProject();
+                    } catch (IOException e) {
+                        serverMessage = connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    } finally {
+                        System.out.println(serverMessage.getContent());
+                    }
+                    break;
+                case 16:
+                    action = new Action(connection);
+                    try {
+                        serverMessage = action.getProjectOptions();
+                    } catch (IOException e) {
+                        serverMessage = connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    } finally {
+                        System.out.println(serverMessage.getContent());
+                    }
+                    break;
+                case 17:
                     return false;
                 default:
                     System.out.println("Choose an option between 1 and 13");     break;

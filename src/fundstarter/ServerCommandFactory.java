@@ -138,6 +138,15 @@ public class ServerCommandFactory {
         return command;
     }
 
+    // TODO
+    public static Command getProjectOptions(int projectId) {
+        Command command = new Command("getProjectOption");
+        command.addArgument(Integer.toString(projectId));
+        return command;
+    }
+
+
+
     public static Command sendMessageFromProject(Message message) {
         Command command = new Command("sendMessageFromProject");
         command.setAttachedObject(message);
