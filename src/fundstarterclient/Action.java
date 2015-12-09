@@ -15,9 +15,11 @@ import java.util.Scanner;
 public class Action {
     private Command command;
     private Connection connection;
+    private Protection protection;
 
     public Action(Connection connection) {
         this.connection = connection;
+        this.protection = new Protection();
         System.out.println();
     }
 
@@ -121,19 +123,20 @@ public class Action {
     }
 
     public ServerMessage cancelProject() throws IOException{
-        Scanner scan = new Scanner(System.in);
         int projectId;
-        System.out.print("Project id: ");
-        projectId = scan.nextInt(); scan.nextLine();
+
+        projectId = protection.verifyProjectId();
+
         this.sendObjectToServer(ServerCommandFactory.cancelProject(projectId));
         return receiveResponseFromServer();
     }
 
     public ServerMessage addAdminToProject() throws IOException{
         Scanner scan = new Scanner(System.in);
+        int projectId;
 
-        System.out.print("Project Id: ");
-        int projectId = scan.nextInt(); scan.nextLine();
+        projectId = protection.verifyProjectId();
+
         System.out.print("New Admin Username: ");
         String username = scan.nextLine();
 
@@ -146,8 +149,7 @@ public class Action {
         int projectId;
         Goal goal = new Goal();
 
-        System.out.print("Project Id: ");
-        projectId = scan.nextInt(); scan.nextLine();
+        projectId = protection.verifyProjectId();
         System.out.print("Min Goal: ");
         goal.setAmount(scan.nextDouble());
         scan.nextLine();
@@ -164,8 +166,7 @@ public class Action {
         Reward reward = new Reward();
         int projectId;
 
-        System.out.print("Project Name: ");
-        projectId = scan.nextInt(); scan.nextLine();
+        projectId = protection.verifyProjectId();
         System.out.print("Pledge min: ");
         reward.setMinAmount(scan.nextDouble());
         scan.nextLine();
@@ -182,7 +183,7 @@ public class Action {
         int projectId;
         String question;
 
-        System.out.print("Project Id: ");
+        projectId = protection.verifyProjectId();
         projectId = scan.nextInt(); scan.nextLine();
         System.out.print("Question: ");
         question = scan.nextLine();
@@ -196,8 +197,7 @@ public class Action {
         int projectId;
         String option;
 
-        System.out.print("Project Id: ");
-        projectId = scan.nextInt(); scan.nextLine();
+        projectId = protection.verifyProjectId();
         System.out.print("Option: ");
         option = scan.nextLine();
 
@@ -210,8 +210,7 @@ public class Action {
         Goal goal = new Goal();
         int projectId;
 
-        System.out.print("Project Id: ");
-        projectId = scan.nextInt(); scan.nextLine();
+        projectId = protection.verifyProjectId();
         System.out.print("Min Goal: ");
         goal.setAmount(scan.nextDouble());
         scan.nextLine();
@@ -226,8 +225,7 @@ public class Action {
         Scanner scan = new Scanner(System.in);
         int rewardId, projectId;
 
-        System.out.print("Project id: ");
-        projectId = scan.nextInt(); scan.nextLine();
+        projectId = protection.verifyProjectId();
         System.out.print("Reward id: ");
         rewardId = scan.nextInt(); scan.nextLine();
 
@@ -239,8 +237,7 @@ public class Action {
         Scanner scan = new Scanner(System.in);
         int projectId;
 
-        System.out.print("Choose project id: ");
-        projectId = scan.nextInt(); scan.nextLine();
+        projectId = protection.verifyProjectId();
 
         this.sendCommandToServer(ServerCommandFactory.getProject(projectId));
         return receiveResponseFromServer();
@@ -250,8 +247,7 @@ public class Action {
         Scanner scan = new Scanner(System.in);
         int projectId;
 
-        System.out.print("Choose project id: ");
-        projectId = scan.nextInt(); scan.nextLine();
+        projectId = protection.verifyProjectId();
 
         this.sendCommandToServer(ServerCommandFactory.getRewardsFromProject(projectId));
         return receiveResponseFromServer();
@@ -261,8 +257,7 @@ public class Action {
         Scanner scan = new Scanner(System.in);
         int projectId;
 
-        System.out.print("Choose project id: ");
-        projectId = scan.nextInt(); scan.nextLine();
+        projectId = protection.verifyProjectId();
 
         this.sendCommandToServer(ServerCommandFactory.getGoalsFromProject(projectId));
         return receiveResponseFromServer();
@@ -282,8 +277,7 @@ public class Action {
         Scanner scan = new Scanner(System.in);
         int projectId;
 
-        System.out.print("Project: ");
-        projectId = scan.nextInt(); scan.nextLine();
+        projectId = protection.verifyProjectId();
         sendCommandToServer(ServerCommandFactory.getProjectMessages(projectId));
         return receiveResponseFromServer();
     }
@@ -305,8 +299,9 @@ public class Action {
 
     public ServerMessage getProjectOptions() throws IOException{
         Scanner scan = new Scanner(System.in);
-        System.out.print("Project Id: ");
-        int projectId = scan.nextInt(); scan.nextLine();
+        int projectId;
+
+        projectId = protection.verifyProjectId();
 
         sendCommandToServer(ServerCommandFactory.getProjectOptions(projectId));
         return receiveResponseFromServer();
@@ -317,9 +312,9 @@ public class Action {
     public ServerMessage sendMessageFromProject() throws IOException {
         Scanner scan = new Scanner(System.in);
         Message message = new Message();
+        int projectId;
 
-        System.out.print("Project Id: ");
-        message.setProjectId(scan.nextInt());
+        projectId = protection.verifyProjectId();
         System.out.println("Message: ");
         message.setText(scan.nextLine());
 
@@ -331,9 +326,9 @@ public class Action {
     public ServerMessage sendMessageToProject() throws IOException {
         Scanner scan = new Scanner(System.in);
         Message message = new Message();
+        int projectId;
 
-        System.out.print("Project Id: ");
-        message.setProjectId(scan.nextInt());
+        projectId = protection.verifyProjectId();
         System.out.println("Message: ");
         message.setText(scan.nextLine());
 
@@ -345,8 +340,7 @@ public class Action {
         Scanner scan = new Scanner(System.in);
         int rewardId, toUserId;
 
-        System.out.print("Reward: ");
-        rewardId = scan.nextInt(); scan.nextLine();
+        rewardId = protection.verifyRewardId();
         System.out.print("Person name: ");
         toUserId = scan.nextInt(); scan.nextLine();
 
@@ -357,8 +351,9 @@ public class Action {
     public ServerMessage pledge() throws IOException {
         Scanner scan = new Scanner(System.in);
         Pledge pledge = new Pledge();
-        System.out.print("Project Name: ");
-        pledge.setProjectId(scan.nextInt());
+        int projectId;
+
+        projectId = protection.verifyProjectId();
         System.out.print("Amount: ");
         pledge.setAmount(scan.nextDouble());
         System.out.print("Decision: ");
