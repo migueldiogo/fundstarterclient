@@ -37,8 +37,6 @@ public class ShowMenus {
         menu1.addOption("Quit");
         menu1.setAnswerPrompt("Please enter your choice: ");
 
-
-
         do {
             System.out.println(menu1.toString());
 
@@ -144,7 +142,7 @@ public class ShowMenus {
                 case 2:
                     action = new Action(connection);
                     try {
-                        serverMessage = action.viewBalance();
+                        serverMessage = action.getBalance();
                     } catch (IOException e) {
                         serverMessage = connection.handleServerFailOver(action.getCommand(), loggedPerson);
                     } finally {

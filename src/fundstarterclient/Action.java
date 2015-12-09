@@ -54,7 +54,6 @@ public class Action {
         do {
             command = new Command();
 
-
             command.setCommand("signup");
             System.out.print("Username: ");
             command.addArgument(scan.nextLine());
@@ -249,10 +248,10 @@ public class Action {
         return receiveResponseFromServer();
     }
 
-    public ServerMessage viewBalance() throws IOException {
+    public ServerMessage getBalance() throws IOException {
         command = new Command();
 
-        command.setCommand("viewBalance");
+        command.setCommand("getBalance");
         sendCommandToServer(command);
         return receiveResponseFromServer();
     }
