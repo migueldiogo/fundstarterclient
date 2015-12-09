@@ -173,11 +173,11 @@ public class Action {
 
         command.setCommand("addAdminToProject");
         System.out.print("Project Id: ");
-        String projectId = scan.nextLine();
+        int projectId = scan.nextInt();
         System.out.print("New Admin Username: ");
         String username = scan.nextLine();
 
-        this.sendObjectToServer(command);
+        this.sendObjectToServer(ServerCommandFactory.addAdminToProject(username, "" + projectId));
         return receiveResponseFromServer();
     }
 
