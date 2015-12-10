@@ -15,11 +15,12 @@ public class ShowMenus {
     private String loggedPerson;
     private Action action;
     private Connection connection;
-
+    private Protection protection;
 
     public ShowMenus(Connection connection){
         this.loggedPerson = "";
         this.connection = connection;
+        this.protection = new Protection();
     }
 
     public void start() {
@@ -35,7 +36,7 @@ public class ShowMenus {
         menu1.addOption("Login");
         menu1.addOption("Sign Up");
         menu1.addOption("Quit");
-        menu1.setAnswerPrompt("Please enter your choice: ");
+        //menu1.setAnswerPrompt("Please enter your choice: ");
 
         do {
             System.out.println(menu1.toString());
@@ -70,7 +71,7 @@ public class ShowMenus {
         menu2.addOption("Projects");
         menu2.addOption("Personal Area");
         menu2.addOption("Logout");
-        menu2.setAnswerPrompt("Please enter your choice: ");
+        //menu2.setAnswerPrompt("Please enter your choice: ");
 
         ServerMessage serverMessage = new ServerMessage();
 
@@ -120,7 +121,7 @@ public class ShowMenus {
         subMenu.addOption("Add Admin to Project");
         subMenu.addOption("View Pledges");
         subMenu.addOption("Back");
-        subMenu.setAnswerPrompt("Please enter your choice: ");
+        //subMenu.setAnswerPrompt("Please enter your choice: ");
 
         do{
             System.out.printf(subMenu.toString());
@@ -237,28 +238,56 @@ public class ShowMenus {
         ServerMessage serverMessage = null;
         Menu menu3 = new Menu();
 
-        menu3.addOption("Projects in Progress");
-        menu3.addOption("Expired projects");
         menu3.addOption("New project");
         menu3.addOption("Pledge a project");
+        menu3.addOption("Projects in Progress");
+        menu3.addOption("Expired projects");
+
         menu3.addOption("Send Message to Project");
         menu3.addOption("Send Message from Project");
+
         menu3.addOption("View Project Messages");
-        menu3.addOption("Project Details");
-        menu3.addOption("Add reward to Project");
-        menu3.addOption("Remove reward to Project");
+        menu3.addOption("View Project Details");
+
+        menu3.addOption("Add Reward to Project");
         menu3.addOption("Add Goal to Project");
-        menu3.addOption("Remove extra level");
+        menu3.addOption("Add Option to Project");
+        menu3.addOption("Add Question to Project");
+
+        menu3.addOption("Remove reward from Project");
+        menu3.addOption("Remove extra level from Project");
         menu3.addOption("Back");
-        menu3.setAnswerPrompt("Please enter your choice: ");
+        //menu3.setAnswerPrompt("Please enter your choice: ");
 
         do{
             System.out.print(menu3.toString());
-
             int optionChosen = readOptionChosenByUser(menu3);
 
             switch(optionChosen){
                 case 1:
+                    action = new Action(connection);
+                    try {
+                        serverMessage = action.newProject();
+                    } catch (IOException e) {
+                        serverMessage = connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    } finally {
+                        System.out.println(serverMessage.getContent());
+                    }
+                    break;
+
+                case 2:
+                    action = new Action(connection);
+                    try {
+                        serverMessage = action.pledge();
+                    } catch (IOException e) {
+                        serverMessage = connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    } finally {
+                        System.out.println(serverMessage.getContent());
+                    }
+                    break;
+
+
+                case 3:
                     action = new Action(connection);
                     try {
                         serverMessage = action.getInProgressProjects();
@@ -273,7 +302,7 @@ public class ShowMenus {
                         }
                     }
                     break;
-                case 2:
+                case 4:
                     action = new Action(connection);
                     try {
                         serverMessage = action.getExpiredProjects();
@@ -287,29 +316,7 @@ public class ShowMenus {
                         }
                     }
                     break;
-                case 3:
-                    action = new Action(connection);
-                    try {
-                        serverMessage = action.newProject();
-                    } catch (IOException e) {
-                        serverMessage = connection.handleServerFailOver(action.getCommand(), loggedPerson);
-                    } finally {
-                        System.out.println(serverMessage.getContent());
-                    }
-                    break;
-
-                case 4:
-                    action = new Action(connection);
-                    try {
-                        serverMessage = action.pledge();
-                    } catch (IOException e) {
-                        serverMessage = connection.handleServerFailOver(action.getCommand(), loggedPerson);
-                    } finally {
-                        System.out.println(serverMessage.getContent());
-                    }
-                    break;
-
-                case 5:
+                                case 5:
                     action = new Action(connection);
                     try {
                         serverMessage = action.sendMessageToProject();
@@ -399,18 +406,7 @@ public class ShowMenus {
                         System.out.println(serverMessage.getContent());
                     }
                     break;
-
                 case 10:
-                    action = new Action(connection);
-                    try {
-                        serverMessage = action.removeRewardFromProject();
-                    } catch (IOException e) {
-                        serverMessage = connection.handleServerFailOver(action.getCommand(), loggedPerson);
-                    } finally {
-                        System.out.println(serverMessage.getContent());
-                    }
-                    break;
-                case 11:
                     action = new Action(connection);
                     try{
                         serverMessage = action.addGoalToProject();
@@ -420,7 +416,38 @@ public class ShowMenus {
                         System.out.println(serverMessage.getContent());
                     }
                     break;
+                case 11:
+                    action = new Action(connection);
+                    try{
+                        serverMessage = action.addOptionToProject();
+                    } catch (IOException e) {
+                        serverMessage = connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    } finally {
+                        System.out.println(serverMessage.getContent());
+                    }
+                    break;
                 case 12:
+                    action = new Action(connection);
+                    try{
+                        serverMessage = action.addQuestionToProject();
+                    } catch (IOException e) {
+                        serverMessage = connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    } finally {
+                        System.out.println(serverMessage.getContent());
+                    }
+                    break;
+                case 13:
+                    action = new Action(connection);
+                    try {
+                        serverMessage = action.removeRewardFromProject();
+                    } catch (IOException e) {
+                        serverMessage = connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    } finally {
+                        System.out.println(serverMessage.getContent());
+                    }
+                    break;
+
+                case 14:
                     action = new Action(connection);
                     try {
                         serverMessage = action.removeGoalFromProject();
@@ -430,10 +457,10 @@ public class ShowMenus {
                         System.out.println(serverMessage.getContent());
                     }
                     break;
-                case 13:
+                case 15:
                     return false;
                 default:
-                    System.out.println("Choose an option between 1 and 13");     break;
+                    System.out.println("Choose an option between 1 and 15");     break;
             }
         }while(voltar);
 
@@ -441,15 +468,14 @@ public class ShowMenus {
     }
 
     public int readOptionChosenByUser(Menu menu){
-        String rawOptionInput = "";
+        //String rawOptionInput = "";
         int optionInput = 0;
         Boolean inputValidation;
         Scanner scan = new Scanner(System.in);
 
         do {
             try{
-                rawOptionInput = scan.nextLine();
-                optionInput = Integer.parseInt(rawOptionInput);
+                optionInput = protection.verifiyUserChoice();
                 inputValidation = true;
 
                 OptionList menuAssociatedOptionList = menu.getOptionsList();
