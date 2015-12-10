@@ -121,4 +121,16 @@ public class Protection {
 
         return 0;
     }
+
+    public String verifyString(String st){
+        Scanner scan = new Scanner(System.in);
+        String result = "";
+
+        do {
+            System.out.print(st);
+            result = scan.nextLine();
+        } while(result.isEmpty());
+
+        return result;
+    }
 }

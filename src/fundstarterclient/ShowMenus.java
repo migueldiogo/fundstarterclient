@@ -36,7 +36,6 @@ public class ShowMenus {
         menu1.addOption("Login");
         menu1.addOption("Sign Up");
         menu1.addOption("Quit");
-        //menu1.setAnswerPrompt("Please enter your choice: ");
 
         do {
             System.out.println(menu1.toString());
@@ -71,7 +70,6 @@ public class ShowMenus {
         menu2.addOption("Projects");
         menu2.addOption("Personal Area");
         menu2.addOption("Logout");
-        //menu2.setAnswerPrompt("Please enter your choice: ");
 
         ServerMessage serverMessage = new ServerMessage();
 
@@ -121,7 +119,6 @@ public class ShowMenus {
         subMenu.addOption("Add Admin to Project");
         subMenu.addOption("View Pledges");
         subMenu.addOption("Back");
-        //subMenu.setAnswerPrompt("Please enter your choice: ");
 
         do{
             System.out.printf(subMenu.toString());
@@ -257,7 +254,6 @@ public class ShowMenus {
         menu3.addOption("Remove reward from Project");
         menu3.addOption("Remove extra level from Project");
         menu3.addOption("Back");
-        //menu3.setAnswerPrompt("Please enter your choice: ");
 
         do{
             System.out.print(menu3.toString());

@@ -97,11 +97,11 @@ public class Action {
         Project project = new Project();
         String parts[];
 
-        System.out.print("Project Name: ");
-        project.setName(scan.nextLine());
+        String projectName = protection.verifyString("Project Name: ");
+        project.setName(projectName);
 
-        System.out.print("Description: ");
-        project.setDescription(scan.nextLine());
+        String description = protection.verifyString("Description: ");
+        project.setDescription(description);
 
         // Date
         do{
@@ -117,13 +117,11 @@ public class Action {
         calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(parts[2]));
         project.setExpirationDate(new Date(calendar.getTime().getTime()));
 
-
-
         double firstGoalValue = protection.verifyDouble("First Goal Value: ");
         project.setFirstGoalValue(firstGoalValue);
 
-        System.out.print("Question: ");
-        project.setQuestion(scan.nextLine());
+        String question = protection.verifyString("Question: ");
+        project.setDescription(question);
 
         this.sendCommandToServer(ServerCommandFactory.newProject(project));
         return receiveResponseFromServer();
@@ -144,8 +142,7 @@ public class Action {
 
         projectId = protection.verifyInt("Project ID: ");
 
-        System.out.print("New Admin Username: ");
-        String username = scan.nextLine();
+        String username = protection.verifyString("New Admin Username: ");
 
         this.sendObjectToServer(ServerCommandFactory.addAdminToProject(username, projectId));
         return receiveResponseFromServer();
@@ -160,8 +157,8 @@ public class Action {
         double minGoal = protection.verifyDouble("Min Goal: ");
         goal.setAmount(minGoal);
 
-        System.out.print("Description: ");
-        goal.setExtraDescription(scan.nextLine());
+        String description = protection.verifyString("Extra Description: ");
+        goal.setExtraDescription(description);
 
         sendCommandToServer(ServerCommandFactory.addGoalToProject(goal, projectId));
         return receiveResponseFromServer();
@@ -177,8 +174,8 @@ public class Action {
         double pledgeMin = protection.verifyDouble("Pledge Min: ");
         reward.setMinAmount(pledgeMin);
 
-        System.out.print("Gift name: ");
-        reward.setDescription(scan.nextLine());
+        String giftName = protection.verifyString("Gift name: ");
+        reward.setDescription(giftName);
 
         sendCommandToServer(ServerCommandFactory.addRewardToProject(reward, projectId));
         return receiveResponseFromServer();
@@ -191,8 +188,8 @@ public class Action {
         String question;
 
         projectId = protection.verifyInt("Project ID: ");
-        System.out.print("Question: ");
-        question = scan.nextLine();
+
+        question = protection.verifyString("Question: ");
 
         sendCommandToServer(ServerCommandFactory.addQuestionToProject(question, projectId));
         return receiveResponseFromServer();
@@ -204,8 +201,8 @@ public class Action {
         String option;
 
         projectId = protection.verifyInt("Project ID: ");
-        System.out.print("Option: ");
-        option = scan.nextLine();
+
+        option = protection.verifyString("Option: ");
 
         sendCommandToServer(ServerCommandFactory.addOptionToProject(new DecisionOption(projectId, option), projectId));
         return receiveResponseFromServer();
@@ -221,8 +218,8 @@ public class Action {
         double minGoal = protection.verifyDouble("Min Goal: ");
         goal.setAmount(minGoal);
 
-        System.out.print("Description: ");
-        goal.setExtraDescription(scan.nextLine());
+        String description = protection.verifyString("Description: ");
+        goal.setExtraDescription(description);
 
         sendCommandToServer(ServerCommandFactory.removeGoalFromProject(goal, projectId));
         return receiveResponseFromServer();
@@ -281,7 +278,6 @@ public class Action {
     }
 
     public ServerMessage getProjectMessages() throws  IOException{
-        Scanner scan = new Scanner(System.in);
         int projectId;
 
         projectId = protection.verifyInt("Project ID: ");
@@ -323,8 +319,8 @@ public class Action {
         projectId = protection.verifyInt("Project ID: ");
         message.setProjectId(projectId);
 
-        System.out.println("Message: ");
-        message.setText(scan.nextLine());
+        String textMessage = protection.verifyString("Message: ");
+        message.setText(textMessage);
 
         this.sendCommandToServer(ServerCommandFactory.sendMessageFromProject(message));
         return receiveResponseFromServer();
@@ -339,8 +335,8 @@ public class Action {
         projectId = protection.verifyInt("Project ID: ");
         message.setProjectId(projectId);
 
-        System.out.println("Message: ");
-        message.setText(scan.nextLine());
+        String textMessage = protection.verifyString("Message: ");
+        message.setText(textMessage);
 
         this.sendCommandToServer(ServerCommandFactory.sendMessageFromProject(message));
         return receiveResponseFromServer();
@@ -368,8 +364,8 @@ public class Action {
         double amount = protection.verifyDouble("Amount: ");
         pledge.setAmount(amount);
 
-        System.out.print("Decision: ");
-        pledge.setDecision(scan.nextInt());
+        int decision = protection.verifyInt("Decision: ");
+        pledge.setDecision(decision);
 
         this.sendCommandToServer(ServerCommandFactory.pledge(pledge));
         return receiveResponseFromServer();
