@@ -6,6 +6,7 @@ import fundstarter.*;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.sql.Date;
 import java.util.Calendar;
 import java.util.Scanner;
 
@@ -108,8 +109,8 @@ public class Action {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, Integer.parseInt(parts[0]));
         calendar.set(Calendar.MONTH, Integer.parseInt(parts[1]));
-        calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(parts[2])-1);
-        project.setExpirationDate(calendar.getTime());
+        calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(parts[2]));
+        project.setExpirationDate(new Date(calendar.getTime().getTime()));
 
         System.out.print("First Goal Value: ");
         project.setFirstGoalValue(scan.nextDouble());

@@ -23,7 +23,7 @@ public class ShowMenus {
     }
 
     public void start() {
-        mainMenuWithUserLoggedIn();
+        mainMenu();
     }
 
 
@@ -114,13 +114,11 @@ public class ShowMenus {
         subMenu.addOption("View messages");
         subMenu.addOption("View balance");
         subMenu.addOption("View rewards");
-        subMenu.addOption("View Pledges");
-
         subMenu.addOption("Offer reward to person");
         subMenu.addOption("Send message to other user");
         subMenu.addOption("Cancel project");
         subMenu.addOption("Add Admin to Project");
-
+        subMenu.addOption("View Pledges");
         subMenu.addOption("Back");
         subMenu.setAnswerPrompt("Please enter your choice: ");
 
@@ -166,17 +164,51 @@ public class ShowMenus {
                         if(serverMessage.isErrorHappened())
                             System.out.println(serverMessage.getContent());
                         else{
-                            new Table().printTableOfAttributedRewards((ArrayList<AttributedReward>) serverMessage.getContent());
-
-                            /*
-                            for(Reward reward : (ArrayList<Reward>) serverMessage.getContent()){
-                                System.out.println(reward.toString());
-                            }
-                            */
+                            new Table().printTableOfAttributedRewards((ArrayList<Reward>) serverMessage.getContent());
                         }
                     }
                     break;
                 case 4:
+                    action = new Action(connection);
+                    try {
+                        serverMessage = action.sendRewardToUser();
+                    } catch (IOException e) {
+                        serverMessage = connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    } finally {
+                        System.out.println(serverMessage.getContent());
+                    }
+                    break;
+                case 5:
+                    action = new Action(connection);
+                    try {
+                        serverMessage = action.sendMessageToOtherUser();
+                    } catch (IOException e) {
+                        serverMessage = connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    } finally {
+                        System.out.println(serverMessage.getContent());
+                    }
+                    break;
+                case 6:
+                    action = new Action(connection);
+                    try {
+                        serverMessage = action.cancelProject();
+                    } catch (IOException e) {
+                        serverMessage = connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    } finally {
+                        System.out.println(serverMessage.getContent());
+                    }
+                    break;
+                case 7:
+                    action = new Action(connection);
+                    try {
+                        serverMessage = action.addAdminToProject();
+                    } catch (IOException e) {
+                        serverMessage = connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    } finally {
+                        System.out.println(serverMessage.getContent());
+                    }
+                    break;
+                case 8:
                     action = new Action(connection);
                     try {
                         serverMessage = action.getPledgesFromUser();
@@ -187,56 +219,8 @@ public class ShowMenus {
                             System.out.println(serverMessage.getContent());
                         else{
                             new Table().printTableOfPledges((ArrayList<Pledge>) serverMessage.getContent());
-
-                            /*
-                            for(Reward reward : (ArrayList<Reward>) serverMessage.getContent()){
-                                System.out.println(reward.toString());
-                            }
-                            */
                         }
                     }
-                    break;
-                case 5:
-                    action = new Action(connection);
-                    try {
-                        serverMessage = action.sendRewardToUser();
-                    } catch (IOException e) {
-                        serverMessage = connection.handleServerFailOver(action.getCommand(), loggedPerson);
-                    } finally {
-                        System.out.println(serverMessage.getContent());
-                    }
-                    break;
-                case 6:
-                    action = new Action(connection);
-                    try {
-                        serverMessage = action.sendMessageToOtherUser();
-                    } catch (IOException e) {
-                        serverMessage = connection.handleServerFailOver(action.getCommand(), loggedPerson);
-                    } finally {
-                        System.out.println(serverMessage.getContent());
-                    }
-                    break;
-                case 7:
-                    action = new Action(connection);
-                    try {
-                        serverMessage = action.cancelProject();
-                    } catch (IOException e) {
-                        serverMessage = connection.handleServerFailOver(action.getCommand(), loggedPerson);
-                    } finally {
-                        System.out.println(serverMessage.getContent());
-                    }
-                    break;
-                case 8:
-                    action = new Action(connection);
-                    try {
-                        serverMessage = action.addAdminToProject();
-                    } catch (IOException e) {
-                        serverMessage = connection.handleServerFailOver(action.getCommand(), loggedPerson);
-                    } finally {
-                        System.out.println(serverMessage.getContent());
-                    }
-                    break;
-
                 case 9:
                     return false;
                 default:
@@ -253,25 +237,18 @@ public class ShowMenus {
         ServerMessage serverMessage = null;
         Menu menu3 = new Menu();
 
-        menu3.addOption("New project");
-        menu3.addOption("Expired projects");
         menu3.addOption("Projects in Progress");
+        menu3.addOption("Expired projects");
+        menu3.addOption("New project");
         menu3.addOption("Pledge a project");
-
         menu3.addOption("Send Message to Project");
         menu3.addOption("Send Message from Project");
-
         menu3.addOption("View Project Messages");
-        menu3.addOption("View Project Details");
-
+        menu3.addOption("Project Details");
         menu3.addOption("Add reward to Project");
-        menu3.addOption("Add Goal to Project");
-        menu3.addOption("Add Option to Project");
-        menu3.addOption("Add Question to Project");
-
         menu3.addOption("Remove reward to Project");
-        menu3.addOption("Remove goal from Project");
-        menu3.addOption("Show Project Options");
+        menu3.addOption("Add Goal to Project");
+        menu3.addOption("Remove extra level");
         menu3.addOption("Back");
         menu3.setAnswerPrompt("Please enter your choice: ");
 
@@ -284,11 +261,16 @@ public class ShowMenus {
                 case 1:
                     action = new Action(connection);
                     try {
-                        serverMessage = action.newProject();
+                        serverMessage = action.getInProgressProjects();
                     } catch (IOException e) {
                         serverMessage = connection.handleServerFailOver(action.getCommand(), loggedPerson);
                     } finally {
-                        System.out.println(serverMessage.getContent());
+                        if(serverMessage.isErrorHappened())
+                            System.out.println(serverMessage.getContent());
+                        else{
+                            new Table().printTableOfProjects((ArrayList<Project>) serverMessage.getContent());
+
+                        }
                     }
                     break;
                 case 2:
@@ -308,16 +290,11 @@ public class ShowMenus {
                 case 3:
                     action = new Action(connection);
                     try {
-                        serverMessage = action.getInProgressProjects();
+                        serverMessage = action.newProject();
                     } catch (IOException e) {
                         serverMessage = connection.handleServerFailOver(action.getCommand(), loggedPerson);
                     } finally {
-                        if(serverMessage.isErrorHappened())
-                            System.out.println(serverMessage.getContent());
-                        else{
-                            new Table().printTableOfProjects((ArrayList<Project>) serverMessage.getContent());
-
-                        }
+                        System.out.println(serverMessage.getContent());
                     }
                     break;
 
@@ -382,12 +359,13 @@ public class ShowMenus {
                     } finally {
 
                         if (!serverMessage.isErrorHappened()) {
-                            /*
+
                             Table table = new Table();
                             Project project = (Project) serverMessage.getContent();
 
                             table.printProject(project);
 
+                            /*
                             if (project.getQuestion() != null && project.getQuestion().getQuestion() != null && !project.getQuestion().getQuestion().equals("") &&
                                     project.getQuestion().getAnswers() != null && !project.getQuestion().getAnswers().isEmpty())
                                 table.printTableOfOptions(project.getQuestion());
@@ -421,37 +399,8 @@ public class ShowMenus {
                         System.out.println(serverMessage.getContent());
                     }
                     break;
+
                 case 10:
-                    action = new Action(connection);
-                    try{
-                        serverMessage = action.addGoalToProject();
-                    } catch (IOException e) {
-                        serverMessage = connection.handleServerFailOver(action.getCommand(), loggedPerson);
-                    } finally {
-                        System.out.println(serverMessage.getContent());
-                    }
-                    break;
-                case 11:
-                    action = new Action(connection);
-                    try {
-                        serverMessage = action.addOptionToProject();
-                    } catch (IOException e) {
-                        serverMessage = connection.handleServerFailOver(action.getCommand(), loggedPerson);
-                    } finally {
-                        System.out.println(serverMessage.getContent());
-                    }
-                    break;
-                case 12:
-                    action = new Action(connection);
-                    try {
-                        serverMessage = action.addQuestionToProject();
-                    } catch (IOException e) {
-                        serverMessage = connection.handleServerFailOver(action.getCommand(), loggedPerson);
-                    } finally {
-                        System.out.println(serverMessage.getContent());
-                    }
-                    break;
-                case 13:
                     action = new Action(connection);
                     try {
                         serverMessage = action.removeRewardFromProject();
@@ -461,8 +410,17 @@ public class ShowMenus {
                         System.out.println(serverMessage.getContent());
                     }
                     break;
-
-                case 14:
+                case 11:
+                    action = new Action(connection);
+                    try{
+                        serverMessage = action.addGoalToProject();
+                    } catch (IOException e) {
+                        serverMessage = connection.handleServerFailOver(action.getCommand(), loggedPerson);
+                    } finally {
+                        System.out.println(serverMessage.getContent());
+                    }
+                    break;
+                case 12:
                     action = new Action(connection);
                     try {
                         serverMessage = action.removeGoalFromProject();
@@ -472,19 +430,7 @@ public class ShowMenus {
                         System.out.println(serverMessage.getContent());
                     }
                     break;
-
-
-                case 15:
-                    action = new Action(connection);
-                    try {
-                        serverMessage = action.getProjectOptions();
-                    } catch (IOException e) {
-                        serverMessage = connection.handleServerFailOver(action.getCommand(), loggedPerson);
-                    } finally {
-                        System.out.println(serverMessage.getContent());
-                    }
-                    break;
-                case 16:
+                case 13:
                     return false;
                 default:
                     System.out.println("Choose an option between 1 and 13");     break;

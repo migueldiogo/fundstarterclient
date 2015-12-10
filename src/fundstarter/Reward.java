@@ -9,6 +9,7 @@ public class Reward implements Serializable{
     private static final long serialVersionUID = 1L;
 
     private int userId;
+    private double rewardId;
     private double minAmount;
     private String description;
     private boolean done;
@@ -24,6 +25,13 @@ public class Reward implements Serializable{
         this.description = description;
     }
 
+    public double getRewardId() {
+        return rewardId;
+    }
+
+    public void setRewardId(double rewardId) {
+        this.rewardId = rewardId;
+    }
 
     public int getUserId() {
         return userId;
