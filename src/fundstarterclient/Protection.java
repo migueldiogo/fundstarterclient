@@ -58,7 +58,7 @@ public class Protection {
         return firstGoalValue;
     }
 
-    public int verifiyUserChoice(){
+    public int verifyUserChoice(){
         Scanner scan = new Scanner(System.in);
         boolean inputNeeded = false;
         int choice = 0;
