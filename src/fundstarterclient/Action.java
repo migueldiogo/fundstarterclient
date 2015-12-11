@@ -60,7 +60,6 @@ public class Action {
         do {
             command = new Command();
 
-            // TODO verificar se funca signup com pass diferente
             do{
                 command.setCommand("signup");
                 System.out.print("Username: ");
@@ -100,7 +99,6 @@ public class Action {
         return receiveResponseFromServer();
     }
 
-    // TODO
     public ServerMessage newProject() throws IOException {
         Scanner scan = new Scanner(System.in);
         Project project = new Project();
@@ -226,7 +224,6 @@ public class Action {
         return receiveResponseFromServer();
     }
 
-    // TODO verificar com cliente e db
     public ServerMessage removeRewardFromProject() throws IOException{
         int rewardId, projectId;
 
@@ -307,7 +304,6 @@ public class Action {
         return receiveResponseFromServer();
     }
 
-    // TODO
     public ServerMessage sendMessageFromProject() throws IOException {
         Message message = new Message();
         int projectId;
