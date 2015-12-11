@@ -360,23 +360,6 @@ public class ShowMenus {
 
                             table.printProject(project);
 
-                            /*
-                            if (project.getQuestion() != null && project.getQuestion().getQuestion() != null && !project.getQuestion().getQuestion().equals("") &&
-                                    project.getQuestion().getAnswers() != null && !project.getQuestion().getAnswers().isEmpty())
-                                table.printTableOfOptions(project.getQuestion());
-                            else
-                                System.out.println("This project doesn't have any question.");
-
-                            if (project.getRewards() != null && !project.getRewards().isEmpty())
-                                table.printTableOfRewards(project.getRewards());
-                            else
-                                System.out.println("This project doesn't have any reward to offer.");
-                            if (project.getExtras() != null && !project.getExtras().isEmpty())
-                                table.printTableOfGoals(project.getExtras());
-                            else
-                                System.out.println("This project doesn't have any extra.");
-                                */
-
                         }
                         else
                             System.out.println("This project doesn't exist.");

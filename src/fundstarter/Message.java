@@ -1,7 +1,8 @@
 package fundstarter;
 
+
 import java.io.Serializable;
-import java.util.Date;
+import java.sql.Timestamp;
 
 /**
  * Created by sergiopires on 26/10/15.
@@ -10,7 +11,7 @@ public class Message implements Serializable{
     private static final long serialVersionUID = 1L;
 
     private int messageId;
-    private Date date;
+    private Timestamp dateTime;
     private String text;
     private int projectId;
     private int pledgerUserId;
@@ -18,9 +19,9 @@ public class Message implements Serializable{
     public Message() {
     }
 
-    public Message(int messageId, Date date, String text, int projectId, int pledgerUserId) {
+    public Message(int messageId, Timestamp dateTime, String text, int projectId, int pledgerUserId) {
         this.messageId = messageId;
-        this.date = date;
+        this.dateTime = dateTime;
         this.text = text;
         this.projectId = projectId;
         this.pledgerUserId = pledgerUserId;
@@ -34,12 +35,12 @@ public class Message implements Serializable{
         this.messageId = messageId;
     }
 
-    public Date getDate() {
-        return date;
+    public Timestamp getDateTime() {
+        return dateTime;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setDateTime(Timestamp dateTime) {
+        this.dateTime = dateTime;
     }
 
     public String getText() {
@@ -69,7 +70,7 @@ public class Message implements Serializable{
     @Override
     public String toString() {
         return "Message{" +
-                "date=" + date +
+                "dateTime=" + dateTime +
                 ", messageId=" + messageId +
                 ", text='" + text + '\'' +
                 ", projectId=" + projectId +

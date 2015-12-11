@@ -8,8 +8,8 @@ import java.io.Serializable;
 public class Reward implements Serializable{
     private static final long serialVersionUID = 1L;
 
+    private int rewardId;
     private int userId;
-    private double rewardId;
     private double minAmount;
     private String description;
     private boolean done;
@@ -25,11 +25,11 @@ public class Reward implements Serializable{
         this.description = description;
     }
 
-    public double getRewardId() {
+    public int getRewardId() {
         return rewardId;
     }
 
-    public void setRewardId(double rewardId) {
+    public void setRewardId(int rewardId) {
         this.rewardId = rewardId;
     }
 
@@ -57,7 +57,7 @@ public class Reward implements Serializable{
         this.description = description;
     }
 
-    public boolean getDone() {
+    public boolean isDone() {
         return done;
     }
 
@@ -80,6 +80,8 @@ public class Reward implements Serializable{
     public void setProjectName(String projectName) {
         this.projectName = projectName;
     }
+
+
 
     @Override
     public String toString() {

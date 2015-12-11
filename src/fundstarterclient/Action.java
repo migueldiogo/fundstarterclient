@@ -364,8 +364,8 @@ public class Action {
         double amount = protection.verifyDouble("Amount: ");
         pledge.setAmount(amount);
 
-        int decision = protection.verifyInt("Decision: ");
-        pledge.setDecision(decision);
+        String decision = protection.verifyString("Decision: ");
+        pledge.setDecisionDescription(decision);
 
         this.sendCommandToServer(ServerCommandFactory.pledge(pledge));
         return receiveResponseFromServer();

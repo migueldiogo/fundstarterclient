@@ -10,19 +10,28 @@ public class Pledge implements Serializable{
 
     private int pledgeId;
     private String projectName;
-    private int pledgerUsreId;
+    private int pledgeUserId;
     private int projectId;
     private double amount;
     private int decision;
+    private String decisionDescription;
+
 
     public Pledge() {
     }
 
-    public Pledge(int pledgerUsreId, int projectId, double amount, int decision) {
-        this.pledgerUsreId = pledgerUsreId;
+    public Pledge(int pledgeUserId, int projectId, double amount, int decision) {
+        this.pledgeUserId = pledgeUserId;
         this.projectId = projectId;
         this.amount = amount;
         this.decision = decision;
+    }
+
+    public Pledge(int pledgeUserId, int projectId, double amount, String decisionDescription) {
+        this.pledgeUserId = pledgeUserId;
+        this.projectId = projectId;
+        this.amount = amount;
+        this.decisionDescription = decisionDescription;
     }
 
     public int getPledgeId() {
@@ -42,11 +51,11 @@ public class Pledge implements Serializable{
     }
 
     public int getPledgerUserId() {
-        return pledgerUsreId;
+        return pledgeUserId;
     }
 
     public void setPledgerUserId(int pledgerUsreId) {
-        this.pledgerUsreId = pledgerUsreId;
+        this.pledgeUserId = pledgerUsreId;
     }
 
     public int getProjectId() {
@@ -73,12 +82,20 @@ public class Pledge implements Serializable{
         this.decision = decision;
     }
 
+    public String getDecisionDescription() {
+        return decisionDescription;
+    }
+
+    public void setDecisionDescription(String decisionDescription) {
+        this.decisionDescription = decisionDescription;
+    }
+
     @Override
     public String toString() {
         return "Pledge{" +
                 "amount=" + amount +
                 ", pledgeId=" + pledgeId +
-                ", pledgerUsreId=" + pledgerUsreId +
+                ", pledgeUserId=" + pledgeUserId +
                 ", projectId=" + projectId +
                 ", decision='" + decision + '\'' +
                 '}';

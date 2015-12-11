@@ -86,7 +86,7 @@ public class Table {
         data = new String[listOfMessages.size()][4];
         for (int i = 0; i < listOfMessages.size(); i++) {
             Message message = listOfMessages.get(i);
-            data[i][0] = message.getDate().toString();
+            data[i][0] = message.getDateTime().toString();
             data[i][1] = "" + message.getPledgerUserId();
             data[i][2] = message.getText();
             data[i][3] = "" + message.getProjectId();
@@ -109,7 +109,7 @@ public class Table {
             data[i][0] = reward.getRewardId() + "";
             data[i][1] = reward.getProjectName();
             data[i][2] = reward.getDescription();
-            data[i][3] = (reward.getDone()) ? "Confirmado" : "Previsto";
+            data[i][3] = (reward.isDone()) ? "Confirmado" : "Previsto";
         }
         ASCIITable.getInstance().printTable(header, data);
 
@@ -144,7 +144,7 @@ public class Table {
             Pledge pledge = pledges.get(i);
             data[i][0] = pledge.getProjectName();
             data[i][1] = pledge.getAmount() + "€";
-            data[i][2] = "" + pledge.getDecision();
+            data[i][2] = pledge.getDecisionDescription();
 
         }
         ASCIITable.getInstance().printTable(header, data);
