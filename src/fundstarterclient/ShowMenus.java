@@ -362,7 +362,7 @@ public class ShowMenus {
 
                         }
                         else
-                            System.out.println("This project doesn't exist.");
+                            System.out.println(serverMessage.getContent());
 
                     }
                     break;
@@ -381,7 +381,7 @@ public class ShowMenus {
 
                         }
                         else
-                            System.out.println("This project doesn't exist.");
+                            System.out.println(serverMessage.getContent());
                     }
                     break;
                 case 9:
@@ -399,7 +399,7 @@ public class ShowMenus {
 
                         }
                         else
-                            System.out.println("This project doesn't exist.");
+                            System.out.println(serverMessage.getContent());
                     }
                     break;
                 case 10:
@@ -417,7 +417,7 @@ public class ShowMenus {
 
                         }
                         else
-                            System.out.println("This project doesn't exist.");
+                            System.out.println(serverMessage.getContent());
                     }
                     break;
                 case 11:
