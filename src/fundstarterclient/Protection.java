@@ -71,7 +71,7 @@ public class Protection {
                 inputNeeded = true;
             }
             else{
-                System.out.println("Te choice needs to be an integer.");
+                System.out.println("The choice needs to be an integer.");
             }
             scan.nextLine();
         }

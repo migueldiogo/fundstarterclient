@@ -314,6 +314,9 @@ public class Action {
         String textMessage = protection.verifyString("Message: ");
         message.setText(textMessage);
 
+        int userId = protection.verifyInt("User ID: ");
+        message.setPledgerUserId(userId);
+
         this.sendCommandToServer(ServerCommandFactory.sendMessageFromProject(message));
         return receiveResponseFromServer();
     }
@@ -328,7 +331,7 @@ public class Action {
         String textMessage = protection.verifyString("Message: ");
         message.setText(textMessage);
 
-        this.sendCommandToServer(ServerCommandFactory.sendMessageFromProject(message));
+        this.sendCommandToServer(ServerCommandFactory.sendMessageToProject(message));
         return receiveResponseFromServer();
     }
 

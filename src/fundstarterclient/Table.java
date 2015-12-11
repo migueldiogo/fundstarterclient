@@ -76,20 +76,22 @@ public class Table {
     }
 
     public void printTableOfMessages(ArrayList<Message> listOfMessages) {
-        header = new String[4];
+        header = new String[5];
         header[0] = "Date";
-        header[1] = "From";
-        header[2] = "Message";
-        header[3] = "Project Associate";
+        header[1] = "Message";
+        header[2] = "Project Associate";
+        header[3] = "Pledger User ID";
+        header[4] = "From project ID";
 
 
-        data = new String[listOfMessages.size()][4];
+        data = new String[listOfMessages.size()][5];
         for (int i = 0; i < listOfMessages.size(); i++) {
             Message message = listOfMessages.get(i);
             data[i][0] = message.getDateTime().toString();
-            data[i][1] = "" + message.getPledgerUserId();
-            data[i][2] = message.getText();
-            data[i][3] = "" + message.getProjectId();
+            data[i][1] = message.getText();
+            data[i][2] = "" + message.getProjectId();
+            data[i][3] = "" + message.getPledgerUserId();
+            data[i][4] = "" + message.isMessageFromProject();
 
         }
         ASCIITable.getInstance().printTable(header, data);
