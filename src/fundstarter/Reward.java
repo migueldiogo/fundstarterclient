@@ -8,6 +8,7 @@ import java.io.Serializable;
 public class Reward implements Serializable{
     private static final long serialVersionUID = 1L;
 
+    private int pledgeId;
     private int rewardId;
     private int userId;
     private double minAmount;
@@ -23,6 +24,14 @@ public class Reward implements Serializable{
         this.userId = userId;
         this.minAmount = minAmount;
         this.description = description;
+    }
+
+    public int getPledgeId() {
+        return pledgeId;
+    }
+
+    public void setPledgeId(int pledgeId) {
+        this.pledgeId = pledgeId;
     }
 
     public int getRewardId() {

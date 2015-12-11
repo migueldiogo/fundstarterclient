@@ -140,7 +140,7 @@ public class ServerCommandFactory {
 
     // TODO
     public static Command getProjectOptions(int projectId) {
-        Command command = new Command("getProjectOption");
+        Command command = new Command("getProjectOptions");
         command.addArgument(Integer.toString(projectId));
         return command;
     }
@@ -159,10 +159,10 @@ public class ServerCommandFactory {
         return command;
     }
 
-    public static Command sendRewardToUser(int rewardId, int toUserId) {
+    public static Command sendRewardToUser(int pledgeId, String toUserName) {
         Command command = new Command("sendRewardToUser");
-        command.addArgument(Integer.toString(rewardId));
-        command.addArgument(Integer.toString(toUserId));
+        command.addArgument(Integer.toString(pledgeId));
+        command.addArgument(toUserName);
         return command;
     }
 

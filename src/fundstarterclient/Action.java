@@ -54,18 +54,27 @@ public class Action {
 
     public void signUp() {
         Scanner scan = new Scanner(System.in);
+        String password1 = "", password2 = "", username = "";
 
         ServerMessage serverMessage = null;
         do {
             command = new Command();
 
-            command.setCommand("signup");
-            System.out.print("Username: ");
-            command.addArgument(scan.nextLine());
-            System.out.print("Password: ");
-            command.addArgument(scan.nextLine());
-            System.out.print("Repeat Password: ");
-            command.addArgument(scan.nextLine());
+            // TODO verificar se funca signup com pass diferente
+            do{
+                command.setCommand("signup");
+                System.out.print("Username: ");
+                username = scan.nextLine();
+
+                System.out.print("Password: ");
+                password1 = scan.nextLine();
+
+                System.out.print("Repeat Password: ");
+                password2 = scan.nextLine();
+            } while(protection.verifyPassword(password1, password2) != 0);
+
+            command.addArgument(username);
+            command.addArgument(password1);
 
             try {
                 sendCommandToServer(command);
@@ -121,7 +130,7 @@ public class Action {
         project.setFirstGoalValue(firstGoalValue);
 
         String question = protection.verifyString("Question: ");
-        project.setDescription(question);
+        project.setQuestion(question);
 
         this.sendCommandToServer(ServerCommandFactory.newProject(project));
         return receiveResponseFromServer();
@@ -137,7 +146,6 @@ public class Action {
     }
 
     public ServerMessage addAdminToProject() throws IOException{
-        Scanner scan = new Scanner(System.in);
         int projectId;
 
         projectId = protection.verifyInt("Project ID: ");
@@ -157,8 +165,8 @@ public class Action {
         double minGoal = protection.verifyDouble("Min Goal: ");
         goal.setAmount(minGoal);
 
-        String description = protection.verifyString("Extra Description: ");
-        goal.setExtraDescription(description);
+        System.out.print("Extra Description: ");
+        goal.setExtraDescription(scan.nextLine());
 
         sendCommandToServer(ServerCommandFactory.addGoalToProject(goal, projectId));
         return receiveResponseFromServer();
@@ -166,7 +174,6 @@ public class Action {
 
 
     public ServerMessage addRewardToProject() throws IOException{
-        Scanner scan = new Scanner(System.in);
         Reward reward = new Reward();
 
         int projectId = protection.verifyInt("Project ID: ");
@@ -183,7 +190,6 @@ public class Action {
     }
 
     public ServerMessage addQuestionToProject() throws IOException {
-        Scanner scan = new Scanner(System.in);
         int projectId;
         String question;
 
@@ -196,7 +202,6 @@ public class Action {
     }
 
     public ServerMessage addOptionToProject() throws IOException{
-        Scanner scan = new Scanner(System.in);
         int projectId;
         String option;
 
@@ -209,7 +214,6 @@ public class Action {
     }
 
     public ServerMessage removeGoalFromProject() throws IOException{
-        Scanner scan = new Scanner(System.in);
         Goal goal = new Goal();
         int projectId;
 
@@ -218,15 +222,12 @@ public class Action {
         double minGoal = protection.verifyDouble("Min Goal: ");
         goal.setAmount(minGoal);
 
-        String description = protection.verifyString("Description: ");
-        goal.setExtraDescription(description);
-
         sendCommandToServer(ServerCommandFactory.removeGoalFromProject(goal, projectId));
         return receiveResponseFromServer();
     }
 
+    // TODO verificar com cliente e db
     public ServerMessage removeRewardFromProject() throws IOException{
-        Scanner scan = new Scanner(System.in);
         int rewardId, projectId;
 
         projectId = protection.verifyInt("Project ID: ");
@@ -238,7 +239,6 @@ public class Action {
     }
 
     public ServerMessage getProject() throws IOException {
-        Scanner scan = new Scanner(System.in);
         int projectId;
 
         projectId = protection.verifyInt("Project ID: ");
@@ -248,7 +248,6 @@ public class Action {
     }
 
     public ServerMessage getRewardsFromProject() throws IOException {
-        Scanner scan = new Scanner(System.in);
         int projectId;
 
         projectId = protection.verifyInt("Project ID: ");
@@ -258,7 +257,6 @@ public class Action {
     }
 
     public ServerMessage getGoalsFromProject() throws IOException {
-        Scanner scan = new Scanner(System.in);
         int projectId;
 
         projectId = protection.verifyInt("Project ID: ");
@@ -309,10 +307,8 @@ public class Action {
         return receiveResponseFromServer();
     }
 
-
-
+    // TODO
     public ServerMessage sendMessageFromProject() throws IOException {
-        Scanner scan = new Scanner(System.in);
         Message message = new Message();
         int projectId;
 
@@ -326,9 +322,7 @@ public class Action {
         return receiveResponseFromServer();
     }
 
-    // TODO responder a mensagens precisaria só de mensagem id
     public ServerMessage sendMessageToProject() throws IOException {
-        Scanner scan = new Scanner(System.in);
         Message message = new Message();
         int projectId;
 
@@ -343,18 +337,18 @@ public class Action {
     }
 
     public ServerMessage sendRewardToUser() throws IOException {
-        int rewardId, toUserId;
+        int pledgeId;
+        String toUserName;
 
-        rewardId = protection.verifyInt("Reward ID: ");
+        pledgeId = protection.verifyInt("Pledge ID: ");
 
-        toUserId = protection.verifyInt("Person ID: ");
+        toUserName = protection.verifyString("Username: ");
 
-        sendCommandToServer(ServerCommandFactory.sendRewardToUser(rewardId, toUserId));
+        sendCommandToServer(ServerCommandFactory.sendRewardToUser(pledgeId, toUserName));
         return receiveResponseFromServer();
     }
 
     public ServerMessage pledge() throws IOException {
-        Scanner scan = new Scanner(System.in);
         Pledge pledge = new Pledge();
         int projectId;
 

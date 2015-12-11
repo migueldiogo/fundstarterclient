@@ -97,19 +97,21 @@ public class Table {
     }
 
     public void printTableOfAttributedRewards(ArrayList<Reward> rewards) {
-        header = new String[4];
+        header = new String[5];
         header[0] = "Project";
-        header[1] = "Reward ID";
-        header[2] = "Reward";
-        header[3] = "Estado";
+        header[1] = "Pledge ID";
+        header[2] = "Reward ID";
+        header[3] = "Reward";
+        header[4] = "Estado";
 
-        data = new String[rewards.size()][4];
+        data = new String[rewards.size()][5];
         for (int i = 0; i < rewards.size(); i++) {
             Reward reward = rewards.get(i);
-            data[i][0] = reward.getRewardId() + "";
-            data[i][1] = reward.getProjectName();
-            data[i][2] = reward.getDescription();
-            data[i][3] = (reward.isDone()) ? "Confirmado" : "Previsto";
+            data[i][0] = reward.getProjectName();
+            data[i][1] = reward.getPledgeId() + "";
+            data[i][2] = "" + reward.getRewardId();
+            data[i][3] = reward.getDescription();
+            data[i][4] = (reward.isDone()) ? "Confirmado" : "Previsto";
         }
         ASCIITable.getInstance().printTable(header, data);
 
@@ -133,18 +135,20 @@ public class Table {
     }
 
     public void printTableOfPledges(ArrayList<Pledge> pledges) {
-        header = new String[3];
-        header[0] = "Project";
-        header[1] = "Amount";
-        header[2] = "Decision";
+        header = new String[4];
+        header[0] = "Pledge ID";
+        header[1] = "Project";
+        header[2] = "Amount";
+        header[3] = "Decision";
 
 
-        data = new String[pledges.size()][3];
+        data = new String[pledges.size()][4];
         for (int i = 0; i < pledges.size(); i++) {
             Pledge pledge = pledges.get(i);
-            data[i][0] = pledge.getProjectName();
-            data[i][1] = pledge.getAmount() + "€";
-            data[i][2] = pledge.getDecisionDescription();
+            data[i][0] = "" + pledge.getPledgeId();
+            data[i][1] = pledge.getProjectName();
+            data[i][2] = pledge.getAmount() + "€";
+            data[i][3] = pledge.getDecisionDescription();
 
         }
         ASCIITable.getInstance().printTable(header, data);
@@ -166,9 +170,7 @@ public class Table {
 
     }
 
-    public void printTableOfOptions(String question, ArrayList<DecisionOption>options) {
-
-        System.out.println("Question: " + question);
+    public void printTableOfOptions(ArrayList<DecisionOption>options) {
         header = new String[3];
         header[0] = "Option ID";
         header[1] = "Option";

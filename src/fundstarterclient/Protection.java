@@ -133,4 +133,11 @@ public class Protection {
 
         return result;
     }
+
+    public int verifyPassword(String password1, String password2){
+        if(password1.compareTo(password2) == 0)
+            return 0;
+        else
+            return 1;
+    }
 }
