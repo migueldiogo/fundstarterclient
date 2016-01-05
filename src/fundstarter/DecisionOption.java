@@ -25,6 +25,14 @@ public class DecisionOption implements Serializable{
         return optionId;
     }
 
+    public int getVotes() {
+        return votes;
+    }
+
+    public void setVotes(int votes) {
+        this.votes = votes;
+    }
+
     public void setOptionId(int optionId) {
         this.optionId = optionId;
     }
@@ -43,14 +51,6 @@ public class DecisionOption implements Serializable{
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public int getVotes() {
-        return votes;
-    }
-
-    public void setVotes(int votes) {
-        this.votes = votes;
     }
 
     @Override

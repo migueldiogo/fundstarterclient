@@ -16,6 +16,7 @@ public class Project implements Serializable{
     private double firstGoalValue;
     private double totalAmountEarned;
     private String question;
+    private Long tumblrPostId;
 
     public Project() {
     }
@@ -95,6 +96,14 @@ public class Project implements Serializable{
 
     public void setQuestion(String question) {
         this.question = question;
+    }
+
+    public Long getTumblrPostId() {
+        return tumblrPostId;
+    }
+
+    public void setTumblrPostId(Long tumblrPostId) {
+        this.tumblrPostId = tumblrPostId;
     }
 
     @Override

@@ -16,6 +16,8 @@ public class Message implements Serializable{
     private int projectId;
     private int pledgerUserId;
     private boolean messageFromProject;
+    private String projectName;
+    private String pledgerUsername;
 
     public Message() {
     }
@@ -74,6 +76,22 @@ public class Message implements Serializable{
 
     public void setMessageFromProject(boolean messageFromProject) {
         this.messageFromProject = messageFromProject;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
+
+    public String getPledgerUsername() {
+        return pledgerUsername;
+    }
+
+    public void setPledgerUsername(String pledgerUsername) {
+        this.pledgerUsername = pledgerUsername;
     }
 
     @Override
